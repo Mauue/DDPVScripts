@@ -1,0 +1,963 @@
+{% extends "template.html"%}
+{% block title %} Demo {% endblock %}
+
+{% block main %}
+
+    <div id="page-loading" style="height: 800px; width: 100%; display:flex;justify-content:center;align-items:center;">
+        <div  class="spinner-border" style="width: 40px; height: 40px;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+    <div class="container d-none" id="container" style="margin-top: 30px; height: fit-content">
+
+        <ul class="nav nav-pills nav-fill mb-3" id="tabs_2" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="planner-tab" data-toggle="tab" href="#tabs_2_1" role="tab" aria-controls="planner" aria-selected="true">
+                    <span class="nav-link-icon d-block"><i class="bi bi-diagram-3-fill fa-3x"></i></span>
+                    <h3 class="d-none d-sm-block ">Planner</h3>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="verifier-tab" data-toggle="tab" href="#tabs_2_2" role="tab" aria-controls="verifier" aria-selected="false" >
+                    <span class="nav-link-icon d-block"><i class="bi bi-hdd-network-fill fa-3x"></i></span>
+                    <h3 class="d-none d-sm-block ">Verifier</h3>
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="tabs_2_1" role="tabpanel" aria-labelledby="planner-tab">
+                <div class="row">
+                    <div class="col-8">
+                        <div id="topology-panel" style="width: 800px;height:600px"></div>
+
+                    </div>
+                    <div class="col-4 p-3 mb-2 bg-secondary text-dark" style="text-align: center">
+                        <h2> Demo Setting</h2>
+
+                        <div class="accordion" id="accordionExample">
+                            <div class="card">
+                                <div class="card-header " id="headingOne" style="padding: 0">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left p-6" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            1. Select topology you want to run Tulkun on.
+                                        </button>
+                                    </h2>
+                                </div>
+
+                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="custom-control custom-radio mb-3">
+                                            <input type="radio" name="custom-radio-1" class="custom-control-input" id="network-Internet2" checked="checked">
+                                            <label class="custom-control-label" for="network-Internet2">Internet2 (mimicked)</label>
+                                        </div>
+                                        <div class="custom-control custom-radio mb-3">
+                                            <input type="radio" name="custom-radio-1"  class="custom-control-input" id="network1" >
+                                            <label class="custom-control-label" for="network1">Small testbed</label>
+                                        </div>
+                                        <div class="custom-control custom-radio mb-3">
+                                            <input type="radio" name="custom-radio-1"  class="custom-control-input" id="randomNetwork" >
+                                            <label class="custom-control-label" for="randomNetwork">Generate a random topology.</label>
+
+                                            <button type="button" id="refresh-random-topology-button" class="btn btn-link btn-sm" style="padding: 0" onclick="new_random_topology()" disabled>refresh</button>
+
+                                        </div>
+                                        <button type="button" class="btn btn-primary" onclick="confirm_topology()" >Next</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header" id="headingTwo" style="padding: 0">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                            2. Specify your Requirement.
+                                        </button>
+                                    </h2>
+                                </div>
+                                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <div class="row ">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend">
+                                                    <label class="input-group-text" for="requirement_source">Source</label>
+                                                </div>
+                                                <select class="custom-select custom-select-sm" id="requirement_source" >
+                                                </select>
+                                            </div>
+
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend">
+                                                    <label class="input-group-text" for="requirement_destination">Destination</label>
+                                                </div>
+                                                <select class="custom-select custom-select-sm" id="requirement_destination" >
+                                                </select>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <span class="text-left">In this demo, we check the reachability from source to destination in <span class="font-weight-bold">x+n</span> hops, where x is the length of the shortest path.</span>
+
+                                                <div class="input-group-prepend">
+                                                    <label class="input-group-text" for="requirement_addition_hops">n</label>
+                                                </div>
+                                                <select class="custom-select custom-select-sm" id="requirement_addition_hops" >
+                                                    <option value="0">0</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2" selected>2</option>
+                                                    <option value="3">3</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-primary" onclick="confirm_requirement()" >Next</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header" id="headingThree" style="padding: 0">
+                                    <h2 class="mb-0">
+                                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                            3. Confirm your selection
+                                        </button>
+                                    </h2>
+                                </div>
+                                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <table class="table">
+                                            <tbody>
+                                            <tr >
+                                                <td scope="row" class="font-weight-bold">
+                                                    Topology
+                                                </td>
+                                                <td id="network-name"></td>
+                                            </tr>
+                                            <tr>
+                                                <td scope="row" class="font-weight-bold">
+                                                    Requirement (expressed in our declarative language)
+                                                </td>
+                                                <td id="requirement"></td>
+                                            </tr>
+                                            <tr class="table-divider"></tr>
+                                            </tbody>
+                                        </table>
+
+                                        <button  class="btn btn-primary" id="generate_button" onclick="generate()" disabled>Generate DVNet</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="tab-pane fade d-none" id="tabs_2_2" role="tabpanel" aria-labelledby="verifier-tab" style="min-height: 800px">
+                <div class="row">
+                    <div class="col-8">
+                        <div id="dvnet-panel" style="width: 800px;height:800px"></div>
+
+                    </div>
+                    <div class="col-4 p-3 bg-secondary text-dark" style="text-align: center; ">
+                        <div>
+                            <h3> Dataset Info</h3>
+                            <div style="overflow-y: scroll; max-height: 200px">
+                                <table class="table table-striped" >
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Device</th>
+                                        <th scope="col">IP Address</th>
+                                        <th scope="col">#Rule</th>
+                                        {#                                    <th scope="col">Operation</th>#}
+                                    </tr>
+                                    </thead>
+                                    <tbody id="info_tbody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div>
+                            <h3>Requirement</h3>
+                            <table class="table mb-0">
+                                <tbody>
+                                <tr >
+                                    <td scope="row" class="font-weight-bold">
+                                        Packet Space
+                                    </td>
+                                    <td id="requirement-packet-space"></td>
+                                </tr>
+                                <tr>
+                                    <td scope="row" class="font-weight-bold">
+                                        Ingress Set
+                                    </td>
+                                    <td id="requirement-source"></td>
+                                </tr>
+                                <tr>
+                                    <td scope="row" class="font-weight-bold">
+                                        Behavior
+                                    </td>
+                                    <td id="requirement2"></td>
+                                </tr>
+                                <tr class="table-divider"></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h3 style="text-align: center;">Verification </h3>
+                            <button type="button" class="btn btn-primary" onclick="verification()">Start verification</button>
+{#                            <div class="progress" style="text-align: center; margin-top: 20px; margin-bottom: 0">#}
+{#                                <div id="progressBar" class="progress-bar bg-green" role="progressbar" style="width: 0%">#}
+{#                                </div>#}
+{#                            </div>#}
+                            <div class="progress-wrapper">
+                                <h4 class="progress-label" id="verification-state">Task completed</h4>
+                                <h4 class="progress-percentage text-uppercase" id="verification-percentage">40%</h4>
+                                <div class="progress" style="height: 10px;">
+                                    <div id="progressBar" class="progress-bar bg-green" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0;"></div>
+                                </div>
+                            </div>
+{#                            <div class="badge badge-dot">#}
+{#                                <i class="bg-green"></i>#}
+{#                                <span id="verification-state" style="text-align: center;margin: auto">wait to start</span>#}
+{#                            </div>#}
+                        </div>
+                        <div class="mb-3 d-none" id="final-panel">
+                        <button type="button" id="replay_button" class="btn btn-sm btn-info" onclick="replay()">50x slow motion replay</button>
+                        <button type="button" id="reset_button" class="btn btn-sm btn-warning " onclick="javascript:location.reload()">Reset</button>
+                            <div class="font-weight-400">You can <span class="font-weight-bold">click any node</span> to show its result.</div>
+
+                        </div>
+                        <div>
+                            <h3 style="text-align: center;">Result</h3>
+                            <span id="verification-result" style="font-weight: bolder; font-size: 24px"></span>
+                            <table class="table table-striped mb-0" >
+                                <tbody id="final-result-body">
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <br><br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="ruleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Rules</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">Match ip</th>
+                            <th scope="col">Action</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody id="rule_body">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <div>
+                        <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#ruleAdditionModal">Add rule</button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal" onclick="send_rules()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="ruleAdditionModal" tabindex="-1" aria-labelledby="ruleAdditionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ruleAdditionModalLabel">New rule</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" id="rule-addition-form">
+                        <div class="form-group">
+                            <label for="rule-addition-device-name" class="col-form-label">Device:</label>
+                            <input type="text" class="form-control" placeholder="" id="rule-addition-device-name" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rule-addition-match" class="col-form-label">Match destination IP:</label>
+                            <div class="row" id="rule-addition-match">
+                                <div class="col">
+                                    <input type="text" class="form-control" placeholder="IP" id="rule-addition-match-ip" pattern="^((2((5[0-5])|([0-4]\d)))|([0-1]?\d{1,2}))(\.((2((5[0-5])|([0-4]\d)))|([0-1]?\d{1,2}))){3}$" required>
+                                </div>
+                                <div class="col">
+                                    <input type="number" class="form-control" placeholder="Prefix" id="rule-addition-match-prefix" min="0" max="32" required>
+                                </div>
+                            </div>
+                        </div>
+                        <label for="rule-addition-action" class="col-form-label">Action:</label>
+                        <div class="form-group" id="rule-addition-action" style="padding-left: 20px">
+                            <div id="rule-addition-action-type">
+                                <label for="rule-addition-action-type" class="col-form-label">Type</label>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" name="actionTypeRadios" type="radio"  id="rule-addition-action-type-ALL" value="ALL" checked>
+                                    <label class="form-check-label" for="rule-addition-action-type-ALL">ALL</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" name="actionTypeRadios" type="radio" id="rule-addition-action-type-ANY" value="ANY">
+                                    <label class="form-check-label" for="rule-addition-action-type-ANY">ANY</label>
+                                </div>
+                            </div>
+                            <label for="rule-addition-action-ports" class="col-form-label">Ports</label>
+
+                            <div id="rule-addition-action-ports">
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            {#                            <button type="submit" class="btn btn-primary" >Add</button>#}
+                            <button type="button" class="btn btn-primary" onclick="add_rule()">Add</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="/assets/config/topology-1.0.2.js"></script>
+    <script src="/assets/vendor/echarts/echarts.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        let socketc = null;
+        {#var socket = null;#}
+
+        let myChart = echarts.init(document.getElementById('topology-panel'));
+        let DVNetChart = echarts.init(document.getElementById('dvnet-panel'));
+        let requirement_source = document.getElementById('requirement_source');
+        let requirement_destination = document.getElementById('requirement_destination');
+        let verification_state = $('#verification-state');
+        let verification_percentage = $('#verification-percentage');
+        let verification_result = $('#verification-result');
+        let progress_bar = $('#progressBar');
+        let rule_addition_IP_dom = $('#rule-addition-match-ip')
+        let rule_addition_prefix_dom = $('#rule-addition-match-prefix')
+        let rule_addition_type_dom = $('#rule-addition-action-type')
+        let rule_addition_ports_dom = $('#rule-addition-action-ports')
+        let refresh_topology_button = $('#refresh-random-topology-button')
+
+        let assemble_requirement = false;
+        let network_name = "Internet2";
+        let devices;
+        let nodes;
+        let link;
+        let source;
+        let destination;
+        {#let destination_ip;#}
+        {#let destination_ip;#}
+        let addition_hops = 0;
+        let requirement;
+        let allow_generate_DVNet = false;
+        let node_data;
+        let DVNet_link_data = [];
+        let node_result = new Map();
+        let device_rules = new Map();
+        let device_ports = new Map();
+        let device_info = new Map();
+        let result_sequence = [];
+        let finish_node_num = 0;
+        let device_selected_in_rules = null;
+        let max_index = 0;
+        let last_result_time = 0;
+        let _this = this;
+        window.onload = ()=>{
+            {#socket = io();#}
+            let ws_url = `ws://${location.host}/demo/ws/`
+            if(window.location.protocol==="https:")
+                ws_url = `wss://${location.host}/demo/ws/`
+            socketc = new WebSocket(ws_url);
+            socketc.onopen = function(e) {
+               socketc.send(JSON.stringify({type:"connect"}));
+               _this.ws_heartbeat();
+            };
+            socketc.onmessage = function (e){
+                let j = JSON.parse(e.data);
+                switch (j.type){
+                    case "DVNet":{
+                        verifier_init()
+                        parseNodes(j.data)
+                        break;
+                    } case "info":{
+                        parseInfo(j.data);
+                        break;
+                    } case "result":{
+                        parseResult(j.data)
+                        break;
+                    } case "finish":{
+                        parseFinish()
+                        break;
+                    } case "rule":{
+                        parseRule(j.data, j.name)
+                        break;
+                    } default:{
+                        console.log("unrecognized:", j)
+                    }
+                }
+                $('#page-loading').addClass("d-none")
+                $('#container').removeClass("d-none")
+            }
+            set_topology(i2_topology, "Internet2");
+            $("input[id=network-Internet2]").click(()=>{
+                refresh_topology_button.attr("disabled", "")
+                set_topology(i2_topology, "Internet2");
+            })
+            $("input[id=network1]").click(()=>{
+                refresh_topology_button.attr("disabled", "")
+                set_topology(network1_topology, "small testbed");
+            })
+
+            $("input[id=randomNetwork]").click(()=>{
+                refresh_topology_button.removeAttr("disabled")
+                new_random_topology()
+            })
+
+
+            DVNetChart.on('click', function (params) {
+                console.log(params)
+                if(node_result.has(params.name)){
+                    result_toast(params.name, params)
+                }
+            });
+        }
+        function ws_heartbeat(){
+            setTimeout(()=>{
+                if(socketc.readyState === socketc.CLOSED) return
+                socketc.send(JSON.stringify({type:"heartbeat"}))
+                ws_heartbeat();
+            }, 20000)
+        }
+
+        function getRndInteger(min, max) {
+            return Math.floor(Math.random() * (max - min) ) + min;
+        }
+        function verifier_init(){
+            $('#verifier-tab').tab('show')
+            $('#final-result-body').find("tr").remove()
+            verification_state.text("")
+            verification_percentage.text("")
+            finish_node_num = 0;
+            DVNetChart.hideLoading()
+            clearHighlight()
+        }
+        function result_toast(name, params){
+            let r = node_result.get(name);
+            let body = ""
+            for(let i of r){
+                body += (`<tr scope="row"><td>${i[1]}</td><td>${i[0]} </td></tr>`);
+            }
+            $('#node-selected').text(name);
+
+            let toast = `
+  <div id="result-toast" class="toast" style="z-index:9999; position: absolute; top: ${params.event.event.pageY}px; left: ${params.event.event.pageX}px; opacity: 1;" >
+    <div class="toast-header">
+      <strong class="mr-auto">${name} Result</strong>
+      <button type="button" class="ml-2 mb-1 close" onclick="close_toast()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="toast-body">
+    <table class="table table-striped mb-0">
+        <tbody>
+${body}
+        </tbody>
+    </table>
+    </div>
+  </div>
+            `
+            $("#result-toast").remove();
+
+            $('#toasts').append(toast)
+        }
+        function close_toast(){
+            $("#result-toast").remove();
+        }
+        function parseNodes(arr){
+            node_data = []
+            DVNet_link_data = []
+            for(let s of arr){
+                let token = s.split(" ");
+                let node_name = token[1] + "-" +token[2]
+                if(token[0] === "linka")
+                    node_data.push({name: node_name, value: node_name, category: 0, x: 400, y:800, fixed: true})
+                else if (token[1] === source && token[2] === '0')
+                    node_data.push({name: node_name, value: node_name, category: 2, x: 400, y:0})
+                else
+                    node_data.push({name: node_name, value: node_name, category: 1})
+                for(let i=4; i<token.length;i+=2){
+                    DVNet_link_data.push({
+                        source: node_name,
+                        target: token[i] + "-" +token[i+1]})
+                }
+            }
+            DVNetChart.clear();
+            DVNet_options.series[0].data = node_data;
+            DVNet_options.series[0].links = DVNet_link_data;
+            DVNetChart.setOption(DVNet_options);
+        }
+
+        function parseResult(str){
+            let token = str.split(":")
+
+            if (token[0] === "hasResult"){
+                let token2 = token[1].split(" ")
+                highlightResult(token2[0])
+                let this_time = window.performance.now();
+                if (last_result_time === 0) last_result_time = this_time;
+                let diff_time = this_time - last_result_time;
+                last_result_time = this_time;
+                result_sequence.push([token2[0], diff_time])
+                let r = [];
+                for(let i=1; i<token2.length; i+=2){
+                    r.push([token2[i], token2[i+1]])
+                }
+                node_result.set(token2[0], r)
+                finish_node_num++;
+                let p = Math.floor((100*finish_node_num/node_data.length)).toString() + "%";
+                progress_bar.css("width", p);
+                verification_state.text("Working")
+                verification_percentage.text(p)
+            }
+        }
+
+        function highlightResult(node){
+            DVNetChart.dispatchAction({
+                type: 'highlight',
+                seriesIndex: 0,
+                name: node,
+            });
+
+            for(let i of DVNet_link_data){
+                if(i.target === node){
+                    i.lineStyle = {
+                        color: 'rgb(255,0,0)'
+                    }
+
+                }
+            }
+            DVNet_options.series[0].links = DVNet_link_data;
+            DVNetChart.setOption(DVNet_options);
+        }
+
+        function fixNode(){
+            for (let i of node_data) {
+                i.fixed = true;
+            }
+            DVNet_options.series[0].data = node_data;
+            DVNetChart.setOption(DVNet_options);
+        }
+
+        function clearHighlight(){
+            DVNetChart.dispatchAction({
+                type: 'downplay',
+                seriesIndex: 0,
+            });
+            if(DVNet_link_data.length > 0) {
+                for (let i of DVNet_link_data) {
+                    i.lineStyle = undefined
+                }
+                DVNet_options.series[0].links = DVNet_link_data;
+                DVNetChart.setOption(DVNet_options);
+            }
+        }
+
+        function replay(){
+            clearHighlight()
+            let f = i =>{
+                setTimeout(()=>{
+                    if(i < result_sequence.length){
+                        highlightResult(result_sequence[i][0])
+                        f(i+1);
+                    }
+                }, result_sequence[i][1]*50);
+            }
+            setTimeout(()=>f(0), 500)
+        }
+
+        function parseFinish(){
+            progress_bar.css("width", "100%");
+            verification_state.text("Finish");
+            verification_percentage.text("100%")
+            let result = node_result.get(source+"-"+"0")
+            let success = true
+            let dom = $('#final-result-body')
+            for (let i of result){
+                let r = i[0].replace("[", "").replace("]", "")
+                r.split(",")
+                let this_success = true;
+                for(let j of r){
+                    console.log(j)
+                    let n = Number.parseInt(j.trim())
+                    if(n<1) this_success = false
+                }
+                success = success && this_success;
+                dom.append(`<tr scope="row"><td>${i[1]}</td><td>${i[0]} </td><td class="${this_success?"text-success":"text-danger"}">${this_success?"TRUE":"FALSE"}</td></tr>`)
+
+                console.log()
+            }
+            verification_result.removeClass()
+            $('#final-panel').removeClass('d-none');
+            {#$('#reset_button').removeClass('d-none');#}
+
+            if(success) {
+                verification_result.text("TRUE");
+                verification_result.addClass("text-success")
+            }else{
+                verification_result.text("FALSE");
+                verification_result.addClass("text-danger")
+            }
+        }
+
+        function parseInfo(arr){
+            device_info.clear()
+            device_rules.clear()
+            for(let i of arr){
+                device_rules.set(i.name, new Map())
+                let info = {
+                    ip: i.ip,
+                    rule_num: i.rule_num
+                }
+                if(i.name === destination){
+                    $("#requirement-packet-space").text(i.ip)
+                }
+                device_info.set(i.name, info)
+            }
+            refresh_info()
+        }
+
+        function refresh_info(){
+            let dom = $('#info_tbody')
+            dom.find('tr').remove();
+            for(let name of device_info.keys()){
+                let info = device_info.get(name)
+                dom.append(
+                    `<tr scope="row">
+<td>${name}</td>
+<td>${info.ip}</td>
+<td style="display: flex; align-content: center;justify-content: space-evenly;">
+    ${info.rule_num} <button class="btn btn-link" style="padding: 0; text-align: center" onclick="fib_edit('${name}')">Detail</button>
+</td></tr>`)
+            }
+
+        }
+
+        function parseRule(arr, device){
+            {#let dom = $('#rule_body')#}
+            {#dom.find('tr').remove();#}
+            max_index = 0;
+            let rules = device_rules.get(device)
+            setRuleAdditionDeviceName(device);
+            for(let i of arr){
+                if(i.index > max_index) max_index = i.index;
+                rules.set(i.index, {
+                    match: i.match,
+                    action: i.action,
+                })
+                {#dom.append(#}
+                {#    `<tr scope="row"><td>${i.index}</td><td>${i.match}</td><td>${i.action}</td><td><button class="btn btn-link" style="padding: 0; text-align: center" onclick="delete_rule('${device}', '${i.index}')">delete</button></td></tr>`)#}
+            }
+            refresh_rule(device)
+        }
+
+        function refresh_rule(device){
+            let dom = $('#rule_body')
+            dom.find('tr').remove();
+            let i = new Map().keys()
+            i.next()
+            for(let key of device_rules.get(device).keys()){
+                let i = device_rules.get(device).get(key)
+                dom.append(
+                    `<tr scope="row"><td>${i.match}</td><td>${i.action}</td><td><button class="btn btn-link " style="padding: 0; text-align: center; color:red" onclick="delete_rule(${key}) ">delete</button></td></tr>`)
+
+            }
+        }
+
+        function setRuleAdditionDeviceName(device){
+            device_selected_in_rules = device;
+            $("#rule-addition-device-name").attr("placeholder", device)
+            let dom = $("#rule-addition-action-ports")
+            dom.find('div').remove();
+
+            for(let port of device_ports.get(device)){
+                dom.append(`
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" name="port-checkbox" type="checkbox" id="port-${port}" value="${port}">
+                            <label class="form-check-label" for="port-${port}">${port}</label>
+                        </div>
+                `)
+            }
+        }
+        function set_topology(edges, name){
+            devices = new Set();
+            device_ports.clear();
+            link = []
+            for(let i of edges){
+                if(!devices.has(i[0])) {
+                    devices.add(i[0]);
+                    device_ports.set(i[0], new Set())
+                }
+                if(!devices.has(i[1])) {
+                    devices.add(i[1]);
+                    device_ports.set(i[1], new Set())
+                }
+                link.push({source: i[0], target: i[1]})
+                device_ports.get(i[0]).add(i[1]);
+                device_ports.get(i[1]).add(i[0]);
+            }
+            let data = []
+            let index = 1;
+            for(let i of devices){
+                data.push({name: i, value: i})
+                index+=1;
+            }
+            topology_options.series[0].data = data;
+            topology_options.series[0].links = link;
+            myChart.setOption(topology_options);
+            $('#requirement_source').find('option').remove();
+            $('#requirement_destination').find('option').remove()
+            for(let node of devices){
+                $('#requirement_source').append(`<option label="${node}" value="${node}">${node}</option>`)
+                $('#requirement_destination').append(`<option label="${node}" value="${node}">${node}</option>`)
+                {#requirement_destination.options.add(new Option(node, node));#}
+                last = node;
+            }
+            $('#requirement_destination').val(last)
+            $('#additional-hops').text('')
+            $('#additional-hops2').text('')
+            $('#network-name').text(name)
+            refresh_requirement()
+        }
+        function verification(){
+            verifier_init()
+            fixNode();
+            last_result_time = 0;
+            result_sequence = [];
+            finish_node_num = 0;
+            progress_bar.css("width", 0);
+            verification_state.text("working...")
+            verification_percentage.text("0%")
+            verification_result.text("")
+            socketc.send(JSON.stringify({
+                type: "start",
+            }));
+            verification_state.text("Initialization..")
+        }
+        function generate() {
+            data = {
+                type: "genDVNet",
+                topology: link,
+                requirement:{
+                    source: source,
+                    destination: destination,
+                    addition_hops: addition_hops,
+                }
+            }
+            verifier_init()
+
+            socketc.send(JSON.stringify(data));
+            DVNetChart.clear();
+            DVNetChart.showLoading()
+            $('#tabs_2_2').removeClass('d-none')
+            $('#verifier-tab').tab('show')
+
+
+        }
+
+        function confirm_topology(){
+            $('#collapseTwo').collapse("show");
+            $('#collapseOne').collapse("hide");
+        }
+
+        function confirm_requirement(){
+            source = $('#requirement_source option:selected').val();
+            destination = $('#requirement_destination option:selected').val();
+            addition_hops = $('#requirement_addition_hops option:selected').val();
+            let addition_hops_label = $('#requirement_addition_hops option:selected').text();
+            if(devices.has(source) && devices.has(destination) && source !== destination){
+                $("#generate_button").removeAttr("disabled");
+                requirement = `
+<span class="font-weight-bold">exist</span> >= 1,<br>
+(<span class="font-weight-bold">${source}</span>.*<span class="font-weight-bold">${destination}</span>)
+and <span class="font-weight-bold"> loop_free</span>
+and (<span class="font-weight-bold">path_length <= shortest_path_length${addition_hops!=='0'?'+'+addition_hops:''}</span>)`
+                $("#requirement").html(requirement)
+                $("#requirement2").html(requirement)
+            }else{
+                $("#generate_button").attr("disabled", "");
+                $("#requirement").html("")
+                $("#requirement2").html("")
+            }
+            $('#collapseThree').collapse("show");
+            $('#collapseTwo').collapse("hide");
+            $('#requirement-source').html(`[<span class="font-weight-bold">${source}</span>]`)
+        }
+
+        function refresh_requirement(){
+            source = null
+            destination = null
+            $("#generate_button").attr("disabled", "");
+            $("#requirement").html("")
+            $("#requirement2").html("")
+            requirement = null;
+        }
+
+        function fib_edit(name){
+            $('#ruleModal').modal('show')
+            socketc.send(JSON.stringify({type: "getRule", data: name}));
+
+        }
+
+        function add_rule(){
+            let dom = $('#rule-addition-form')[0]
+            if(!dom.checkValidity()) {
+                dom.reportValidity();
+                return false
+            }
+            let device = device_selected_in_rules
+            let ip = rule_addition_IP_dom.val() + "/" + rule_addition_prefix_dom.val()
+            let typ = $("input[name='actionTypeRadios']:checked").val();
+
+            let ports = []
+            $("input[name='port-checkbox']:checked").each(function (){
+                ports.push($(this).val())
+            })
+            let actions = `fwd(${typ}, {${ports.join(", ")}})`
+
+            let rules = device_rules.get(device);
+            rules.set(++max_index, {
+                match: ip,
+                action: actions,
+            })
+            refresh_rule(device)
+            $('#ruleAdditionModal').modal("hide")
+
+            rule_addition_IP_dom.val("")
+            rule_addition_prefix_dom.val(32)
+            $("input[name='port-checkbox']:checked").each(function (){
+                $(this).prop('checked',false);
+            })
+            return false
+        }
+
+        function delete_rule(index){
+            let device = device_selected_in_rules
+            device_rules.get(device).delete(index)
+            refresh_rule(device)
+        }
+        function new_random_topology(){
+            let device_number = getRndInteger(3, 10);
+            let edge_number;
+
+            if(device_number < 5){
+                edge_number = getRndInteger(device_number - 1, device_number * (device_number - 1) / 2);
+            }else if(device_number < 8){
+                edge_number = getRndInteger(device_number + 2, Math.min(device_number * (device_number - 1) / 2, 12));
+            }else {
+                edge_number = getRndInteger(device_number + 4, Math.min(device_number * (device_number - 1) / 2, 15));
+            }
+            let devices = new Set();
+            let edges = new Set();
+            function addEdge(a, b){
+                if(a>b){
+                    edges.add([b, a])
+
+                }else{
+                    edges.add([a, b])
+                }
+            }
+            for(let i=0; i<device_number; i++){
+                devices.add(String.fromCharCode(65+i))
+            }
+            let include = new Set();
+
+            for(let device of devices){
+                if(include.size===0) {
+                    include.add(device);
+                    continue;
+                }
+                let items = [...include];
+                let hit = items[Math.floor(Math.random() * items.length)];
+                addEdge(device, hit);
+                include.add(device);
+            }
+            let items = [...devices];
+            a:
+                for(let i=device_number-1; i<edge_number; i++){
+                    let edge = getArrayItems(items, 2);
+                    for(let e of edges){
+                        if((e[0] === edge[0] && e[1] === edge[1]) || (e[0] === edge[1] && e[1] === edge[0])){
+                            i--;
+                            continue a;
+                        }
+                    }
+                    addEdge(edge[0], edge[1])
+                }
+            {#console.log(edges)#}
+            set_topology(edges, `Random (${device_number} devices, ${edge_number} edges)`);
+
+        }
+        function getArrayItems(arr, num) {
+            //新建一个数组,将传入的数组复制过来,用于运算,而不要直接操作传入的数组;
+            var temp_array = [];
+            for (var index in arr) {
+                temp_array.push(arr[index]);
+            }
+            //取出的数值项,保存在此数组
+            var return_array = [];
+            for (var i = 0; i<num; i++) {
+                //判断如果数组还有可以取出的元素,以防下标越界
+                if (temp_array.length>0) {
+                    //在数组中产生一个随机索引
+                    var arrIndex = Math.floor(Math.random()*temp_array.length);
+                    //将此随机索引的对应的数组元素值复制出来
+                    return_array[i] = temp_array[arrIndex];
+                    //然后删掉此索引的数组元素,这时候temp_array变为新的数组
+                    temp_array.splice(arrIndex, 1);
+                } else {
+                    //数组中数据项取完后,退出循环,比如数组本来只有10项,但要求取出20项.
+                    break;
+                }
+            }
+            return return_array;
+        }
+        function send_rules(){
+            let device = device_selected_in_rules
+            let arr = []
+            device_rules.get(device).forEach(function (v, k){
+                arr.push({match: v.match, action: v.action})
+            })
+            let res = {
+                type: "setRule",
+                name: device,
+                data: arr,
+            }
+            device_info.get(device).rule_num = device_rules.get(device).size;
+            refresh_info();
+            socketc.send(JSON.stringify(res));
+        }
+    </script>
+{% endblock %}
