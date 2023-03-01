@@ -78,10 +78,15 @@ if __name__ == "__main__":
     # # print(t1)
     # for topology_path in topology_paths:
     #     run(topology_path)
-    if sys.argv[1] == "test":
-        test()
-    else:
-        run(sys.argv[1])
+    # if sys.argv[1] == "test":
+    #     test()
+    # else:
+    #     run(sys.argv[1])
+    topology_path = sys.argv[1]
+    output = sys.argv[2]
+    planner = Planner2()
+    planner.read_topology_file(topology_path)
+    planner.all_pair_reachability(k=0, x=2, output=output)
     # planner = Planner2()
     # planner.add_topologies((("S", "A"), ("A", "B"), ("A", "W"), ("B", "C"), ("B", "W"), ("C", "W"), ("C", "D"), ("D", "W")))
     # planner.gen_dvnet("D", "S", 2, 2, "0.puml")

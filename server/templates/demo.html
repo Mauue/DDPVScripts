@@ -801,9 +801,9 @@ ${body}
                 $("#generate_button").removeAttr("disabled");
                 requirement = `
 <span class="font-weight-bold">exist</span> >= 1,<br>
-(<span class="font-weight-bold">${source}</span>.*<span class="font-weight-bold">${destination}</span>)
-and <span class="font-weight-bold"> loop_free</span>
-and (<span class="font-weight-bold">path_length <= shortest_path_length${addition_hops!=='0'?'+'+addition_hops:''}</span>)`
+((<span class="font-weight-bold">${source}</span>.*<span class="font-weight-bold">${destination}</span>)
+and <span class="font-weight-bold"> loop_free</span>),<br>
+ (<span class="font-weight-bold">${addition_hops==='0'?'== shortest':'<= shortest+'+addition_hops}</span>))`
                 $("#requirement").html(requirement)
                 $("#requirement2").html(requirement)
             }else{
