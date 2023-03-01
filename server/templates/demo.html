@@ -70,7 +70,7 @@
                                 <div class="card-header" id="headingTwo" style="padding: 0">
                                     <h2 class="mb-0">
                                         <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                            2. Specify your Requirement.
+                                            2. Specify Invariants.
                                         </button>
                                     </h2>
                                 </div>
@@ -131,7 +131,7 @@
                                             </tr>
                                             <tr>
                                                 <td scope="row" class="font-weight-bold">
-                                                    Requirement (expressed in our declarative language)
+                                                    Invariants (expressed in our declarative language)
                                                 </td>
                                                 <td id="requirement"></td>
                                             </tr>
@@ -176,7 +176,7 @@
                             </div>
                         </div>
                         <div>
-                            <h3>Requirement</h3>
+                            <h3>Invariants</h3>
                             <table class="table mb-0">
                                 <tbody>
                                 <tr >
@@ -801,9 +801,9 @@ ${body}
                 $("#generate_button").removeAttr("disabled");
                 requirement = `
 <span class="font-weight-bold">exist</span> >= 1,<br>
-(<span class="font-weight-bold">${source}</span>.*<span class="font-weight-bold">${destination}</span>)
-and <span class="font-weight-bold"> loop_free</span>
-and (<span class="font-weight-bold">path_length <= shortest_path_length${addition_hops!=='0'?'+'+addition_hops:''}</span>)`
+((<span class="font-weight-bold">${source}</span>.*<span class="font-weight-bold">${destination}</span>)
+and <span class="font-weight-bold"> loop_free</span>),<br>
+ (<span class="font-weight-bold">${addition_hops==='0'?'== shortest':'<= shortest+'+addition_hops}</span>))`
                 $("#requirement").html(requirement)
                 $("#requirement2").html(requirement)
             }else{

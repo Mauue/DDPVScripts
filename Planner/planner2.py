@@ -44,7 +44,7 @@ class State:
         return self.__str__()
 
     def get_name(self):
-        return self.device + "-" + str(self.index)
+        return self.device + "." + str(self.index)
 
     def __lt__(self, other):
         return self.length < other.length
@@ -432,7 +432,7 @@ class Planner2:
                     k_max, additional_hop, len(states),
                     edge_size, label_size/edge_size,
                     len(self._unreachable_conditions)))
-            self.print(states, output, False)
+            self.output_puml(states, output, False)
         return dvnet_num
 
     def mark_state(self, states):
@@ -443,16 +443,19 @@ class Planner2:
             state.index = node_num[state.device]
             node_num[state.device] += 1
 
-    def print(self, states, output, hide_label):
+    def output_puml(self, states, output, hide_label, dst="dst"):
         self.mark_state(states)
         with open(output, mode="w", encoding="utf-8") as f:
             f.write("@startuml\n")
+            f.write("state %s {\n" % dst)
             for state in states:
                 for e in state.edge_out:
-                    if hide_label:
-                        f.write("(%s) --> (%s)\n" % (state.get_name(), e.dst.get_name()))
-                    else:
-                        f.write("(%s) --> (%s):%s\n" % (state.get_name(), e.dst.get_name(), e.get_label()))
+                    f.write("%s-->%s:%s\n" % (state.get_name(), e.dst.get_name(), e.get_label()))
+                if state.is_accept:
+                    f.write("%s-->[*]:[[]]\n" % (state.get_name()))
+                if state == self.ingress_state:
+                    f.write("[*]-->%s:[[]]\n" % (state.get_name()))
+            f.write("}\n")
             f.write("@enduml\n")
 
     def print_topology(self, output):
