@@ -100,6 +100,7 @@ class Planner2:
         self.reachable_table = {}  # type:dict[str,dict[str,0]]
         self.graph = networkx.Graph()
         self.device_to_id = {}  # type:dict[str,int]
+        self.node_num = {}  # type:dict[str, int]
 
     def _init(self):
         self.requirement_dfa = None
@@ -359,22 +360,23 @@ class Planner2:
         count = 0
         t1 = time.time_ns()
         d = networkx.floyd_warshall_numpy(self.graph)
+        states = []
         # print(d)
         # print(self.device_to_id)
         for d1 in self.devices:
-            c = 0
             for d2 in self.devices:
                 if d1 == d2:
                     continue
                 shortest_length = d[self.device_to_id[d1]][self.device_to_id[d2]]
                 if shortest_length == numpy.inf:
                     continue
-                c = max(c, self.gen_dvnet(d1, d2, k, x, output, shortest_length=shortest_length+1))
+                states.append((d1, self.gen_dvnet(d1, d2, k, x, output, shortest_length=shortest_length+1)))
                 # print(len(self.used_edges)/ len(self._edge_map) )
                 # print("%s -> %s" % (d1, d2))
-            count += c
+
         t2 = time.time_ns()
-        print(count)
+        self.clean_device_count()
+        self.output_puml(states, output)
         return (t2-t1)/1000000.0
 
     def gen_dvnet(self, requirement, ingress, k_max, additional_hop, output, shortest_length=MAX_HOPS):
@@ -432,31 +434,36 @@ class Planner2:
                     k_max, additional_hop, len(states),
                     edge_size, label_size/edge_size,
                     len(self._unreachable_conditions)))
-            self.output_puml(states, output, False, dst=requirement)
-        return dvnet_num
+            # self.output_puml(states, output, False, dst=requirement)
+        return states
 
-    def mark_state(self, states):
-        node_num = {}
+    def clean_device_count(self):
         for device in self.devices:
-            node_num[device] = 0
-        for state in states:
-            state.index = node_num[state.device]
-            node_num[state.device] += 1
+            self.node_num[device] = 0
 
-    def output_puml(self, states, output, hide_label, dst="dst"):
-        self.mark_state(states)
+    def mark_state_index(self, states):
+        for state in states:
+            state.index = self.node_num[state.device]
+            self.node_num[state.device] += 1
+
+    def output_puml(self, states_pair, output, hide_label=False):
         with open(output, mode="w", encoding="utf-8") as f:
             f.write("@startuml\n")
-            f.write("state s1 {\n")
-            f.write("'destination:%s\n" % dst)
-            for state in states:
-                for e in state.edge_out:
-                    f.write("%s-->%s:%s\n" % (state.get_name(), e.dst.get_name(), e.get_label()))
-                if state.is_accept:
-                    f.write("%s-->[*]:[[]]\n" % (state.get_name()))
-                if state == self.ingress_state:
-                    f.write("[*]-->%s:[[]]\n" % (state.get_name()))
-            f.write("}\n")
+            count = 0
+            for dst, states in states_pair:
+                self.mark_state_index(states)
+                f.write("state c%d {\n" % count)
+                f.write("'destination:%s\n" % dst)
+                for state in states:
+                    for e in state.edge_out:
+                        f.write("%s-->%s:%s\n" % (state.get_name(), e.dst.get_name(), e.get_label()))
+                    if state.is_accept:
+                        f.write("%s-->[*]:[[]]\n" % (state.get_name()))
+                    if not state.edge_in:
+                        f.write("[*]-->%s:[[]]\n" % (state.get_name()))
+                f.write("}\n")
+                count += 1
+
             f.write("@enduml\n")
 
     def print_topology(self, output):
