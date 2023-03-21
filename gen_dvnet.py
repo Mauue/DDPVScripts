@@ -87,24 +87,4 @@ if __name__ == "__main__":
     planner = Planner2()
     planner.read_topology_file(topology_path)
     planner.all_pair_reachability(k=0, x=2, output=output)
-    # planner = Planner2()
-    # planner.add_topologies((("S", "A"), ("A", "B"), ("A", "W"), ("B", "C"), ("B", "W"), ("C", "W"), ("C", "D"), ("D", "W")))
-    # planner.gen_dvnet("D", "S", 2, 2, "0.puml")
-    # planner.read_topology_file(r"D:\project\distributed-dpv-network-config\Airtel1-1\Airtel1.topology")
-    # planner.gen_fault_tolerance_dvnet("S.*D", "S", 1, 0, "1.puml")
-    # planner.print_topology("topology.puml")
-    # planner._gen_loop_free_dfa()
 
-    # a = 0
-    # requirement = "A.*I"
-    # requirement = "seat"
-    # ingress =  "A"
-    # ingress = "atla"
-
-    # t = planner.all_pair_reachability(k=0, x=2, output=None)
-    # print(t)
-
-    # dfa = DFA.of_length({"aaa", "bbb"}, min_length=2)
-    # print(dfa.accepts_input(["aaa", "bbb"]))
-    # print(dfa.accepts_input("SABAD"))
-    # dfa.show_diagram("1.png")
