@@ -432,7 +432,7 @@ class Planner2:
                     k_max, additional_hop, len(states),
                     edge_size, label_size/edge_size,
                     len(self._unreachable_conditions)))
-            self.output_puml(states, output, False)
+            self.output_puml(states, output, False, dst=requirement)
         return dvnet_num
 
     def mark_state(self, states):
@@ -447,7 +447,8 @@ class Planner2:
         self.mark_state(states)
         with open(output, mode="w", encoding="utf-8") as f:
             f.write("@startuml\n")
-            f.write("state %s {\n" % dst)
+            f.write("state s1 {\n")
+            f.write("'destination:%s\n" % dst)
             for state in states:
                 for e in state.edge_out:
                     f.write("%s-->%s:%s\n" % (state.get_name(), e.dst.get_name(), e.get_label()))

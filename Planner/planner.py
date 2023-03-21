@@ -3,7 +3,7 @@ import argparse
 import networkx as nx
 from .dvnet import DVNet
 from ._base import *
-
+import re
 
 class Planner:
 
@@ -17,6 +17,7 @@ class Planner:
         self.ports = {}  # type:dict[str, dict[str, set[Port]]]
         self.accept_node = set()
         self.dvnet = None
+        pattern = re.compile("")
 
     def add_topologies(self, edges):
         for edge in edges:
