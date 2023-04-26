@@ -502,17 +502,22 @@ ${body}
             for(let s of arr){
                 let token = s.split(" ");
                 let node_name = token[1] + "-" +token[2]
-                if(token[0] === "linka")
+                let has_next = false;
+                for(let i=4; i<token.length;i+=2){
+                    if(i+1 < token.length) {
+                        DVNet_link_data.push({
+                            source: node_name,
+                            target: token[i] + "-" + token[i + 1]
+                        })
+                        has_next = true;
+                    }
+                }
+                if(token[0] === "linka" || has_next === false)
                     node_data.push({name: node_name, value: node_name, category: 0, x: 400, y:800, fixed: true})
                 else if (token[1] === source && token[2] === '0')
                     node_data.push({name: node_name, value: node_name, category: 2, x: 400, y:0})
                 else
                     node_data.push({name: node_name, value: node_name, category: 1})
-                for(let i=4; i<token.length;i+=2){
-                    DVNet_link_data.push({
-                        source: node_name,
-                        target: token[i] + "-" +token[i+1]})
-                }
             }
             DVNetChart.clear();
             DVNet_options.series[0].data = node_data;

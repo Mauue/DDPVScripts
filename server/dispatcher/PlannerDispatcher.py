@@ -62,7 +62,7 @@ class PlannerDispatcher:
         # self._set_state("save DVNet")
         dvnet.write_to_file(out+"/1.DVNet", handle=self.handle)
         self._set_state("build fib")
-        res = gen_fib(os.path.join(out, "1.topology"), out, 1, 24, requirement['destination'])
+        res = gen_fib(os.path.join(out, "1.topology"), out, 1, 24)
         self.handle({"type": "info", "data": res})
         self._working = False
 
