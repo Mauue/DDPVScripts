@@ -80,7 +80,7 @@ def gen_fib(input, output, nprefix, prefix):
     # print('FIB generate to %s with %d entries' % (output, len(G.nodes) * (len(G.nodes) - 1) * nprefix))
 
 
-def gen_fib_overlap(input, output, nprefix, prefix, layers=0, decompose=0):
+def gen_fib_plus(input, output, nprefix, prefix, layers=0, decompose=0):
     # if layers == 0:
     #     return gen_fib(input=input, output=output, nprefix=nprefix, prefix=prefix)
     group_member = 2 ** layers
@@ -175,4 +175,4 @@ if __name__ == '__main__':
     parser.add_argument("-layers", type=int, default=0, help="the overlapping layers")
     parser.add_argument("-decompose", type=int, default=0, help="each rule will be decomposed into 2^k rules")
     args = parser.parse_args()
-    gen_fib_overlap(args.input, args.output, args.nprefix, args.prefix, layers=args.layers, decompose=args.decompose)
+    gen_fib_plus(args.input, args.output, args.nprefix, args.prefix, layers=args.layers, decompose=args.decompose)
