@@ -28,14 +28,15 @@
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="tabs_2_1" role="tabpanel" aria-labelledby="planner-tab">
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-7">
                         <div id="topology-panel" style="width: 800px;height:600px"></div>
 
                     </div>
-                    <div class="col-4 p-3 mb-2 bg-secondary text-dark" style="text-align: center">
+                    <div class="col-5 p-3 mb-2 bg-secondary text-dark" style="text-align: center">
                         <h2> Demo Setting</h2>
 
                         <div class="accordion" id="accordionExample">
+
                             <div class="card">
                                 <div class="card-header " id="headingOne" style="padding: 0">
                                     <h2 class="mb-0">
@@ -45,10 +46,10 @@
                                     </h2>
                                 </div>
 
-                                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="custom-control custom-radio mb-3">
-                                            <input type="radio" name="custom-radio-1" class="custom-control-input" id="network-Internet2" checked="checked">
+                                            <input type="radio" name="custom-radio-1" class="custom-control-input" id="network-Internet2" >
                                             <label class="custom-control-label" for="network-Internet2">Internet2 (mimicked)</label>
                                         </div>
                                         <div class="custom-control custom-radio mb-3">
@@ -92,9 +93,11 @@
                                                 <select class="custom-select custom-select-sm" id="requirement_destination" >
                                                 </select>
                                             </div>
+
+
+
                                             <div class="input-group input-group-sm mb-3">
                                                 <span class="text-left">In this demo, we check the reachability from source to destination in <span class="font-weight-bold">x+n</span> hops, where x is the length of the shortest path.</span>
-
                                                 <div class="input-group-prepend">
                                                     <label class="input-group-text" for="requirement_addition_hops">n</label>
                                                 </div>
@@ -105,7 +108,15 @@
                                                     <option value="3">3</option>
                                                 </select>
                                             </div>
+
+
+
+                                            </div>
+
+
+
                                         </div>
+
                                         <button type="button" class="btn btn-primary" onclick="confirm_requirement()" >Next</button>
 
                                     </div>
@@ -153,11 +164,11 @@
             </div>
             <div class="tab-pane fade d-none" id="tabs_2_2" role="tabpanel" aria-labelledby="verifier-tab" style="min-height: 800px">
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-7">
                         <div id="dvnet-panel" style="width: 800px;height:800px"></div>
 
                     </div>
-                    <div class="col-4 p-3 bg-secondary text-dark" style="text-align: center; ">
+                    <div class="col-5 p-3 bg-secondary text-dark" style="width: 100;text-align: center; ">
                         <div>
                             <h3> Dataset Info</h3>
                             <div style="overflow-y: scroll; max-height: 200px">
@@ -197,13 +208,19 @@
                                     </td>
                                     <td id="requirement2"></td>
                                 </tr>
+                                <tr>
+                                    <td scope="row" class="font-weight-bold">
+                                        Check
+                                    </td>
+                                    <td id="acl_check" ></td>
+                                </tr>
                                 <tr class="table-divider"></tr>
                                 </tbody>
                             </table>
                         </div>
                         <div>
                             <h3 style="text-align: center;">Verification </h3>
-                            <button type="button" class="btn btn-primary" onclick="verification()">Start verification</button>
+                            <button type="button" class="btn btn-primary" onclick="verification()">Start</button>
 {#                            <div class="progress" style="text-align: center; margin-top: 20px; margin-bottom: 0">#}
 {#                                <div id="progressBar" class="progress-bar bg-green" role="progressbar" style="width: 0%">#}
 {#                                </div>#}
@@ -221,7 +238,8 @@
 {#                            </div>#}
                         </div>
                         <div class="mb-3 d-none" id="final-panel">
-                        <button type="button" id="replay_button" class="btn btn-sm btn-info" onclick="replay()">50x slow motion replay</button>
+                            <button type="button" id="sub_button" class="btn btn-sm btn-info" onclick="sub()">Subscribe</button>
+                        <button type="button" id="replay_button" class="btn btn-sm btn-info" onclick="replay()">Verification</button>
                         <button type="button" id="reset_button" class="btn btn-sm btn-warning " onclick="javascript:location.reload()">Reset</button>
                             <div class="font-weight-400">You can <span class="font-weight-bold">click any node</span> to show its result.</div>
 
@@ -248,7 +266,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Rules</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">#Rule</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -259,7 +277,8 @@
                         <tr>
                             <th scope="col">Match ip</th>
                             <th scope="col">Action</th>
-                            <th scope="col"></th>
+                            <th scope="col">ACL</th>
+                             <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody id="rule_body">
@@ -268,7 +287,7 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
                     <div>
-                        <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#ruleAdditionModal">Add rule</button>
+                       <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#ruleAdditionModal">Add rule</button>
                     </div>
                     <div>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -280,7 +299,8 @@
 
     </div>
 
-    <div class="modal fade" id="ruleAdditionModal" tabindex="-1" aria-labelledby="ruleAdditionModalLabel" aria-hidden="true">
+
+     <div class="modal fade" id="ruleAdditionModal" tabindex="-1" aria-labelledby="ruleAdditionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -351,6 +371,11 @@
         let DVNetChart = echarts.init(document.getElementById('dvnet-panel'));
         let requirement_source = document.getElementById('requirement_source');
         let requirement_destination = document.getElementById('requirement_destination');
+        let requirement_waypoint = document.getElementById('requirement_waypoint');
+        let security_group_sourceip = document.getElementById('security_group_sourceip');
+        let security_group_action = document.getElementById('security_group_action');
+        let security_group_desip = document.getElementById('security_group_desip');
+        let acl_name= document.getElementById('acl_name');
         let verification_state = $('#verification-state');
         let verification_percentage = $('#verification-percentage');
         let verification_result = $('#verification-result');
@@ -360,6 +385,8 @@
         let rule_addition_type_dom = $('#rule-addition-action-type')
         let rule_addition_ports_dom = $('#rule-addition-action-ports')
         let refresh_topology_button = $('#refresh-random-topology-button')
+        let NAT_Reject = document.getElementById('NAT_Reject');
+        let NAT_Confirm = document.getElementById('NAT_Confirm');
 
         let assemble_requirement = false;
         let network_name = "Internet2";
@@ -367,14 +394,20 @@
         let nodes;
         let link;
         let source;
+        let acl_source;
+        let acl_dest;
         let destination;
         {#let destination_ip;#}
         {#let destination_ip;#}
         let addition_hops = 0;
         let requirement;
+
         let allow_generate_DVNet = false;
         let node_data;
+
         let DVNet_link_data = [];
+        let acl_list =[];
+        let acl_list2 =[];
         let node_result = new Map();
         let device_rules = new Map();
         let device_ports = new Map();
@@ -385,6 +418,8 @@
         let max_index = 0;
         let last_result_time = 0;
         let _this = this;
+
+//页面加载完成后，通过WebSocket与服务器建立实时通信的连接，并发送一个连接消息给服务器
         window.onload = ()=>{
             {#socket = io();#}
             let ws_url = `ws://${location.host}/demo/ws/`
@@ -395,15 +430,18 @@
                socketc.send(JSON.stringify({type:"connect"}));
                _this.ws_heartbeat();
             };
+
+//处理WebSocket的消息。根据接收到的消息类型，代码会执行不同的逻辑。
             socketc.onmessage = function (e){
                 let j = JSON.parse(e.data);
                 switch (j.type){
                     case "DVNet":{
                         verifier_init()
-                        parseNodes(j.data)
+                        parseNodes(j.data) //更新DVNet图
                         break;
                     } case "info":{
                         parseInfo(j.data);
+
                         break;
                     } case "result":{
                         parseResult(j.data)
@@ -421,6 +459,11 @@
                 $('#page-loading').addClass("d-none")
                 $('#container').removeClass("d-none")
             }
+
+
+
+
+//设置网络拓扑
             set_topology(i2_topology, "Internet2");
             $("input[id=network-Internet2]").click(()=>{
                 refresh_topology_button.attr("disabled", "")
@@ -436,7 +479,7 @@
                 new_random_topology()
             })
 
-
+//点击网络图节点时输出参数信息，并根据节点的结果显示相应的提示信息
             DVNetChart.on('click', function (params) {
                 console.log(params)
                 if(node_result.has(params.name)){
@@ -444,6 +487,8 @@
                 }
             });
         }
+
+//保持与服务器的连接活跃，防止连接超时关闭。
         function ws_heartbeat(){
             setTimeout(()=>{
                 if(socketc.readyState === socketc.CLOSED) return
@@ -452,9 +497,13 @@
             }, 20000)
         }
 
+
+//生成随机数
         function getRndInteger(min, max) {
             return Math.floor(Math.random() * (max - min) ) + min;
         }
+
+//初始化验证器
         function verifier_init(){
             $('#verifier-tab').tab('show')
             $('#final-result-body').find("tr").remove()
@@ -464,6 +513,8 @@
             DVNetChart.hideLoading()
             clearHighlight()
         }
+
+   //义了一个名为"toast"的HTML字符串，用于创建一个弹出提示框（验证结果的显示框）
         function result_toast(name, params){
             let r = node_result.get(name);
             let body = ""
@@ -496,9 +547,13 @@ ${body}
         function close_toast(){
             $("#result-toast").remove();
         }
+
+
+//更新/绘制DVNet图
         function parseNodes(arr){
             node_data = []
             DVNet_link_data = []
+            console.log(arr)
             for(let s of arr){
                 let token = s.split(" ");
                 let node_name = token[1] + "-" +token[2]
@@ -525,6 +580,8 @@ ${body}
             DVNetChart.setOption(DVNet_options);
         }
 
+
+//
         function parseResult(str){
             let token = str.split(":")
 
@@ -549,6 +606,8 @@ ${body}
             }
         }
 
+
+//突出目的节点
         function highlightResult(node){
             DVNetChart.dispatchAction({
                 type: 'highlight',
@@ -556,7 +615,9 @@ ${body}
                 name: node,
             });
 
+//更新链路颜色
             for(let i of DVNet_link_data){
+
                 if(i.target === node){
                     i.lineStyle = {
                         color: 'rgb(255,0,0)'
@@ -568,6 +629,7 @@ ${body}
             DVNetChart.setOption(DVNet_options);
         }
 
+//固定节点位置
         function fixNode(){
             for (let i of node_data) {
                 i.fixed = true;
@@ -576,6 +638,8 @@ ${body}
             DVNetChart.setOption(DVNet_options);
         }
 
+
+//清除节点highlight
         function clearHighlight(){
             DVNetChart.dispatchAction({
                 type: 'downplay',
@@ -590,7 +654,8 @@ ${body}
             }
         }
 
-        function replay(){
+
+function replay(){
             clearHighlight()
             let f = i =>{
                 setTimeout(()=>{
@@ -602,6 +667,26 @@ ${body}
             }
             setTimeout(()=>f(0), 500)
         }
+
+
+        function sub() {
+  clearHighlight();
+
+  // 倒序播放结果序列
+  let reverseIndex = result_sequence.length - 1;
+  let reversePlay = () => {
+    setTimeout(() => {
+      if (reverseIndex >= 0) {
+        highlightResult(result_sequence[reverseIndex][0]);
+        reverseIndex--;
+        reversePlay();
+      }
+    }, result_sequence[reverseIndex][1] * 50);
+  };
+
+  setTimeout(reversePlay, 500);
+}
+
 
         function parseFinish(){
             progress_bar.css("width", "100%");
@@ -636,7 +721,7 @@ ${body}
                 verification_result.addClass("text-danger")
             }
         }
-
+//根据给定的数组更新设备信息和设备规则，并在特定条件下更新要求包空间的文本内容
         function parseInfo(arr){
             device_info.clear()
             device_rules.clear()
@@ -665,12 +750,15 @@ ${body}
 <td>${info.ip}</td>
 <td style="display: flex; align-content: center;justify-content: space-evenly;">
     ${info.rule_num} <button class="btn btn-link" style="padding: 0; text-align: center" onclick="fib_edit('${name}')">Detail</button>
-</td></tr>`)
+</td>
+</tr>`)
             }
 
         }
 
-        function parseRule(arr, device){
+
+//传入的规则数组解析并添加到指定设备的规则列表中，并更新规则表格的显示。
+           function parseRule(arr, device){
             {#let dom = $('#rule_body')#}
             {#dom.find('tr').remove();#}
             max_index = 0;
@@ -696,11 +784,15 @@ ${body}
             for(let key of device_rules.get(device).keys()){
                 let i = device_rules.get(device).get(key)
                 dom.append(
-                    `<tr scope="row"><td>${i.match}</td><td>${i.action}</td><td><button class="btn btn-link " style="padding: 0; text-align: center; color:red" onclick="delete_rule(${key}) ">delete</button></td></tr>`)
+                   `<tr scope="row"><td>${i.match}</td><td>${i.action}</td><td>Acl(permit)</td><td><button class="btn btn-link " style="padding: 0; text-align: center; color:red" onclick="delete_rule(${key}) ">delete</button></td></tr>`
+
+                    )
 
             }
         }
 
+
+//添加rule
         function setRuleAdditionDeviceName(device){
             device_selected_in_rules = device;
             $("#rule-addition-device-name").attr("placeholder", device)
@@ -716,6 +808,9 @@ ${body}
                 `)
             }
         }
+
+
+        //提供的边信息和拓扑图名称来设置拓扑图
         function set_topology(edges, name){
             devices = new Set();
             device_ports.clear();
@@ -743,6 +838,7 @@ ${body}
             topology_options.series[0].links = link;
             myChart.setOption(topology_options);
             $('#requirement_source').find('option').remove();
+            $('#requirement_waypoint').find('option').remove();
             $('#requirement_destination').find('option').remove()
             for(let node of devices){
                 $('#requirement_source').append(`<option label="${node}" value="${node}">${node}</option>`)
@@ -756,7 +852,10 @@ ${body}
             $('#network-name').text(name)
             refresh_requirement()
         }
+
+        //初始化验证器，设置相关变量和界面元素，并与服务器进行通信以开始验证过程
         function verification(){
+
             verifier_init()
             fixNode();
             last_result_time = 0;
@@ -770,7 +869,10 @@ ${body}
                 type: "start",
             }));
             verification_state.text("Initialization..")
+
         }
+
+        //生成DVNet图发送到服务器
         function generate() {
             data = {
                 type: "genDVNet",
@@ -791,26 +893,53 @@ ${body}
 
 
         }
+function getSelectedLabels(){
+
+}
+
+function confirm_NAT(){
+let selectedLabels = getSelectedLabels(); // 获取选中的标签
+if (selectedLabels.includes("NAT_Reject")){
+            $('#collapseTwo').collapse("hide");
+            $('#collapseOne').collapse("show");}
+            if (selectedLabels.includes("NAT_Confirm")) {
+     $('#collapseTwo').collapse("show");
+            $('#collapseOne').collapse("hide");
+  }
+        }
 
         function confirm_topology(){
             $('#collapseTwo').collapse("show");
             $('#collapseOne').collapse("hide");
         }
 
+
+
         function confirm_requirement(){
             source = $('#requirement_source option:selected').val();
             destination = $('#requirement_destination option:selected').val();
             addition_hops = $('#requirement_addition_hops option:selected').val();
+            acl_source = $('#security_group_sourceip').val();
+            acl_dest = $('#security_group_desip').val();
+            acl_action = $('#security_group_action option:selected').val();
+            let acl_add=acl_action+acl_source+acl_dest;
+            acl_list = [acl_action,acl_source,acl_dest];
+
             let addition_hops_label = $('#requirement_addition_hops option:selected').text();
             if(devices.has(source) && devices.has(destination) && source !== destination){
                 $("#generate_button").removeAttr("disabled");
+                $('#acl_name').text(acl_list);
                 requirement = `
+
 <span class="font-weight-bold">exist</span> >= 1,<br>
 ((<span class="font-weight-bold">${source}</span>.*<span class="font-weight-bold">${destination}</span>)
 and <span class="font-weight-bold"> loop_free</span>),<br>
  (<span class="font-weight-bold">${addition_hops==='0'?'== shortest':'<= shortest+'+addition_hops}</span>))`
                 $("#requirement").html(requirement)
                 $("#requirement2").html(requirement)
+
+
+
             }else{
                 $("#generate_button").attr("disabled", "");
                 $("#requirement").html("")
@@ -834,6 +963,13 @@ and <span class="font-weight-bold"> loop_free</span>),<br>
             $('#ruleModal').modal('show')
             socketc.send(JSON.stringify({type: "getRule", data: name}));
 
+        }
+        function nat_edit(){
+        $('#natModal').modal('show');
+        }
+
+        function acl_edit(){
+        $('#aclModal').modal('show');
         }
 
         function add_rule(){
@@ -873,58 +1009,70 @@ and <span class="font-weight-bold"> loop_free</span>),<br>
             device_rules.get(device).delete(index)
             refresh_rule(device)
         }
-        function new_random_topology(){
-            let device_number = getRndInteger(3, 10);
-            let edge_number;
 
-            if(device_number < 5){
-                edge_number = getRndInteger(device_number - 1, device_number * (device_number - 1) / 2);
-            }else if(device_number < 8){
-                edge_number = getRndInteger(device_number + 2, Math.min(device_number * (device_number - 1) / 2, 12));
-            }else {
-                edge_number = getRndInteger(device_number + 4, Math.min(device_number * (device_number - 1) / 2, 15));
-            }
-            let devices = new Set();
-            let edges = new Set();
-            function addEdge(a, b){
-                if(a>b){
-                    edges.add([b, a])
 
-                }else{
-                    edges.add([a, b])
-                }
-            }
-            for(let i=0; i<device_number; i++){
-                devices.add(String.fromCharCode(65+i))
-            }
-            let include = new Set();
+        //生成随机拓扑
+         function new_random_topology(){
+    let device_number = getRndInteger(3,10);
+    let edge_number;
 
-            for(let device of devices){
-                if(include.size===0) {
-                    include.add(device);
-                    continue;
-                }
-                let items = [...include];
-                let hit = items[Math.floor(Math.random() * items.length)];
-                addEdge(device, hit);
-                include.add(device);
-            }
-            let items = [...devices];
-            a:
-                for(let i=device_number-1; i<edge_number; i++){
-                    let edge = getArrayItems(items, 2);
-                    for(let e of edges){
-                        if((e[0] === edge[0] && e[1] === edge[1]) || (e[0] === edge[1] && e[1] === edge[0])){
-                            i--;
-                            continue a;
-                        }
-                    }
-                    addEdge(edge[0], edge[1])
-                }
-            {#console.log(edges)#}
-            set_topology(edges, `Random (${device_number} devices, ${edge_number} edges)`);
-
+    if(device_number < 5){
+        edge_number = getRndInteger(device_number - 1, device_number * (device_number - 1) / 2);
+    }
+    let devices = new Set();
+    let edges = new Set();
+    function addEdge(a, b){
+        if(a > b){
+            edges.add([b, a])
+        } else{
+            edges.add([a, b])
         }
+    }
+
+    for(let i = 0; i < device_number; i++){
+        devices.add(String.fromCharCode(65 + i))
+    }
+    let include = new Set();
+
+    for(let device of devices){
+        if(include.size === 0) {
+            include.add(device);
+            continue;
+        }
+        let items = [...include];
+        let hit = items[Math.floor(Math.random() * items.length)];
+        addEdge(device, hit);
+        include.add(device);
+    }
+    let items = [...devices];
+    a:
+        for(let i = device_number-1; i < edge_number; i++){
+            let edge = getArrayItems(items, 2);
+            for(let e of edges){
+                if((e[0] === edge[0] && e[1] === edge[1]) || (e[0] === edge[1] && e[1] === edge[0])){
+                    i--;
+                    continue a;
+                }
+            }
+            addEdge(edge[0], edge[1])
+        }
+    let connectionPoint = "Z";
+    let waypoint = "Y";
+    devices.add(connectionPoint);
+    devices.add(waypoint);
+    for (let device of devices) {
+  if (device === connectionPoint) {
+    addEdge(device, waypoint);
+  } else if (device !== waypoint) {
+    addEdge(waypoint, device);
+  }
+}
+
+
+    set_topology(edges, `Random (${device_number} devices, ${edge_number} edges)`);
+}
+
+
         function getArrayItems(arr, num) {
             //新建一个数组,将传入的数组复制过来,用于运算,而不要直接操作传入的数组;
             var temp_array = [];
@@ -949,6 +1097,9 @@ and <span class="font-weight-bold"> loop_free</span>),<br>
             }
             return return_array;
         }
+
+
+        //保存对于rule的修改
         function send_rules(){
             let device = device_selected_in_rules
             let arr = []
@@ -964,5 +1115,9 @@ and <span class="font-weight-bold"> loop_free</span>),<br>
             refresh_info();
             socketc.send(JSON.stringify(res));
         }
+
+       function showModal() {
+  $('#ruleAdditionModal').modal('show');
+}
     </script>
 {% endblock %}
