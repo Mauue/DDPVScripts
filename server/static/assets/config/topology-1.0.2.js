@@ -14,6 +14,16 @@ const i2_topology = [
     ["Atlanta", "Houston"]
 ];
 
+const yidongyun_topology = [
+    ["BM", "A"],
+    ["A", "POD1-SW"],
+    ["B", "POD1-SW"],
+    ["VM", "B"],
+    ["POD1-SW", "Aggr"],
+    ["Aggr", "C"],
+    ["C", "BMGW"],
+];
+
 const network1_topology = [
     ["S", "A"],
     ["A", "B"],

@@ -49,20 +49,24 @@
                                 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                                     <div class="card-body">
                                         <div class="custom-control custom-radio mb-3">
-                                            <input type="radio" name="custom-radio-1" class="custom-control-input" id="network-Internet2" >
-                                            <label class="custom-control-label" for="network-Internet2">Internet2 (mimicked)</label>
+                                            <input type="radio" name="custom-radio-1" class="custom-control-input" id="network-yidongyun" >
+                                            <label class="custom-control-label" for="network-yidongyun">移动云</label>
                                         </div>
-                                        <div class="custom-control custom-radio mb-3">
-                                            <input type="radio" name="custom-radio-1"  class="custom-control-input" id="network1" >
-                                            <label class="custom-control-label" for="network1">Small testbed</label>
-                                        </div>
-                                        <div class="custom-control custom-radio mb-3">
-                                            <input type="radio" name="custom-radio-1"  class="custom-control-input" id="randomNetwork" >
-                                            <label class="custom-control-label" for="randomNetwork">Generate a random topology.</label>
-
-                                            <button type="button" id="refresh-random-topology-button" class="btn btn-link btn-sm" style="padding: 0" onclick="new_random_topology()" disabled>refresh</button>
-
-                                        </div>
+{#                                        <div class="custom-control custom-radio mb-3">#}
+{#                                            <input type="radio" name="custom-radio-1" class="custom-control-input" id="network-Internet2" >#}
+{#                                            <label class="custom-control-label" for="network-Internet2">Internet2 (mimicked)</label>#}
+{#                                        </div>#}
+{#                                        <div class="custom-control custom-radio mb-3">#}
+{#                                            <input type="radio" name="custom-radio-1"  class="custom-control-input" id="network1" >#}
+{#                                            <label class="custom-control-label" for="network1">Small testbed</label>#}
+{#                                        </div>#}
+{#                                        <div class="custom-control custom-radio mb-3">#}
+{#                                            <input type="radio" name="custom-radio-1"  class="custom-control-input" id="randomNetwork" >#}
+{#                                            <label class="custom-control-label" for="randomNetwork">Generate a random topology.</label>#}
+{##}
+{#                                            <button type="button" id="refresh-random-topology-button" class="btn btn-link btn-sm" style="padding: 0" onclick="new_random_topology()" disabled>refresh</button>#}
+{##}
+{#                                        </div>#}
                                         <button type="button" class="btn btn-primary" onclick="confirm_topology()" >Next</button>
                                     </div>
                                 </div>
@@ -96,71 +100,71 @@
 
 
 
-                                            <div class="input-group input-group-sm mb-3">
-                                                <span class="text-left">In this demo, we check the reachability from source to destination in <span class="font-weight-bold">x+n</span> hops, where x is the length of the shortest path.</span>
-                                                <div class="input-group-prepend">
-                                                    <label class="input-group-text" for="requirement_addition_hops">n</label>
-                                                </div>
-                                                <select class="custom-select custom-select-sm" id="requirement_addition_hops" >
-                                                    <option value="0">0</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2" selected>2</option>
-                                                    <option value="3">3</option>
-                                                </select>
-                                            </div>
-
-
-
-                                            </div>
+{#                                            <div class="input-group input-group-sm mb-3">#}
+{#                                                <span class="text-left">In this demo, we check the reachability from source to destination in <span class="font-weight-bold">x+n</span> hops, where x is the length of the shortest path.</span>#}
+{#                                                <div class="input-group-prepend">#}
+{#                                                    <label class="input-group-text" for="requirement_addition_hops">n</label>#}
+{#                                                </div>#}
+{#                                                <select class="custom-select custom-select-sm" id="requirement_addition_hops" >#}
+{#                                                    <option value="0">0</option>#}
+{#                                                    <option value="1">1</option>#}
+{#                                                    <option value="2" selected>2</option>#}
+{#                                                    <option value="3">3</option>#}
+{#                                                </select>#}
+{#                                            </div>#}
 
 
 
                                         </div>
 
-                                        <button type="button" class="btn btn-primary" onclick="confirm_requirement()" >Next</button>
+
 
                                     </div>
-                                </div>
-                            </div>
-                            <div class="card">
-                                <div class="card-header" id="headingThree" style="padding: 0">
-                                    <h2 class="mb-0">
-                                        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                            3. Confirm your selection
-                                        </button>
-                                    </h2>
-                                </div>
-                                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <table class="table">
-                                            <tbody>
-                                            <tr >
-                                                <td scope="row" class="font-weight-bold">
-                                                    Topology
-                                                </td>
-                                                <td id="network-name"></td>
-                                            </tr>
-                                            <tr>
-                                                <td scope="row" class="font-weight-bold">
-                                                    Invariants (expressed in our declarative language)
-                                                </td>
-                                                <td id="requirement"></td>
-                                            </tr>
-                                            <tr class="table-divider"></tr>
-                                            </tbody>
-                                        </table>
 
-                                        <button  class="btn btn-primary" id="generate_button" onclick="generate()" disabled>Generate DVNet</button>
+                                    <button type="button" class="btn btn-primary" onclick="confirm_requirement()" >Next</button>
 
-                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="card">
+                            <div class="card-header" id="headingThree" style="padding: 0">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        3. Confirm your selection
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <table class="table">
+                                        <tbody>
+                                        <tr >
+                                            <td scope="row" class="font-weight-bold">
+                                                Topology
+                                            </td>
+                                            <td id="network-name"></td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="row" class="font-weight-bold">
+                                                Invariants (expressed in our declarative language)
+                                            </td>
+                                            <td id="requirement"></td>
+                                        </tr>
+                                        <tr class="table-divider"></tr>
+                                        </tbody>
+                                    </table>
 
+                                    <button  class="btn btn-primary" id="generate_button" onclick="generate()" disabled>Generate DVNet</button>
 
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
+
                 </div>
+
+            </div>
 
             <div class="tab-pane fade d-none" id="tabs_2_2" role="tabpanel" aria-labelledby="verifier-tab" style="min-height: 800px">
                 <div class="row">
@@ -221,10 +225,10 @@
                         <div>
                             <h3 style="text-align: center;">Verification </h3>
                             <button type="button" class="btn btn-primary" onclick="verification()">Start</button>
-{#                            <div class="progress" style="text-align: center; margin-top: 20px; margin-bottom: 0">#}
-{#                                <div id="progressBar" class="progress-bar bg-green" role="progressbar" style="width: 0%">#}
-{#                                </div>#}
-{#                            </div>#}
+                            {#                            <div class="progress" style="text-align: center; margin-top: 20px; margin-bottom: 0">#}
+                            {#                                <div id="progressBar" class="progress-bar bg-green" role="progressbar" style="width: 0%">#}
+                            {#                                </div>#}
+                            {#                            </div>#}
                             <div class="progress-wrapper">
                                 <h4 class="progress-label" id="verification-state">Task completed</h4>
                                 <h4 class="progress-percentage text-uppercase" id="verification-percentage">40%</h4>
@@ -232,15 +236,15 @@
                                     <div id="progressBar" class="progress-bar bg-green" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0;"></div>
                                 </div>
                             </div>
-{#                            <div class="badge badge-dot">#}
-{#                                <i class="bg-green"></i>#}
-{#                                <span id="verification-state" style="text-align: center;margin: auto">wait to start</span>#}
-{#                            </div>#}
+                            {#                            <div class="badge badge-dot">#}
+                            {#                                <i class="bg-green"></i>#}
+                            {#                                <span id="verification-state" style="text-align: center;margin: auto">wait to start</span>#}
+                            {#                            </div>#}
                         </div>
                         <div class="mb-3 d-none" id="final-panel">
                             <button type="button" id="sub_button" class="btn btn-sm btn-info" onclick="sub()">Subscribe</button>
-                        <button type="button" id="replay_button" class="btn btn-sm btn-info" onclick="replay()">Verification</button>
-                        <button type="button" id="reset_button" class="btn btn-sm btn-warning " onclick="javascript:location.reload()">Reset</button>
+                            <button type="button" id="replay_button" class="btn btn-sm btn-info" onclick="replay()">Verification</button>
+                            <button type="button" id="reset_button" class="btn btn-sm btn-warning " onclick="javascript:location.reload()">Reset</button>
                             <div class="font-weight-400">You can <span class="font-weight-bold">click any node</span> to show its result.</div>
 
                         </div>
@@ -278,7 +282,7 @@
                             <th scope="col">Match ip</th>
                             <th scope="col">Action</th>
                             <th scope="col">ACL</th>
-                             <th scope="col"></th>
+                            <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody id="rule_body">
@@ -287,7 +291,7 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
                     <div>
-                       <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#ruleAdditionModal">Add rule</button>
+                        <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#ruleAdditionModal">Add rule</button>
                     </div>
                     <div>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -300,7 +304,7 @@
     </div>
 
 
-     <div class="modal fade" id="ruleAdditionModal" tabindex="-1" aria-labelledby="ruleAdditionModalLabel" aria-hidden="true">
+    <div class="modal fade" id="ruleAdditionModal" tabindex="-1" aria-labelledby="ruleAdditionModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -419,7 +423,7 @@
         let last_result_time = 0;
         let _this = this;
 
-//页面加载完成后，通过WebSocket与服务器建立实时通信的连接，并发送一个连接消息给服务器
+        //页面加载完成后，通过WebSocket与服务器建立实时通信的连接，并发送一个连接消息给服务器
         window.onload = ()=>{
             {#socket = io();#}
             let ws_url = `ws://${location.host}/demo/ws/`
@@ -427,8 +431,8 @@
                 ws_url = `wss://${location.host}/demo/ws/`
             socketc = new WebSocket(ws_url);
             socketc.onopen = function(e) {
-               socketc.send(JSON.stringify({type:"connect"}));
-               _this.ws_heartbeat();
+                socketc.send(JSON.stringify({type:"connect"}));
+                _this.ws_heartbeat();
             };
 
 //处理WebSocket的消息。根据接收到的消息类型，代码会执行不同的逻辑。
@@ -464,11 +468,17 @@
 
 
 //设置网络拓扑
-            set_topology(i2_topology, "Internet2");
+            set_topology(yidongyun_topology, "移动云");
+            $("input[id=network-yidongyun]").click(()=>{
+                refresh_topology_button.attr("disabled", "")
+                set_topology(yidongyun_topology, "移动云");
+            })
+
             $("input[id=network-Internet2]").click(()=>{
                 refresh_topology_button.attr("disabled", "")
                 set_topology(i2_topology, "Internet2");
             })
+
             $("input[id=network1]").click(()=>{
                 refresh_topology_button.attr("disabled", "")
                 set_topology(network1_topology, "small testbed");
@@ -488,7 +498,7 @@
             });
         }
 
-//保持与服务器的连接活跃，防止连接超时关闭。
+        //保持与服务器的连接活跃，防止连接超时关闭。
         function ws_heartbeat(){
             setTimeout(()=>{
                 if(socketc.readyState === socketc.CLOSED) return
@@ -498,12 +508,12 @@
         }
 
 
-//生成随机数
+        //生成随机数
         function getRndInteger(min, max) {
             return Math.floor(Math.random() * (max - min) ) + min;
         }
 
-//初始化验证器
+        //初始化验证器
         function verifier_init(){
             $('#verifier-tab').tab('show')
             $('#final-result-body').find("tr").remove()
@@ -514,7 +524,7 @@
             clearHighlight()
         }
 
-   //义了一个名为"toast"的HTML字符串，用于创建一个弹出提示框（验证结果的显示框）
+        //义了一个名为"toast"的HTML字符串，用于创建一个弹出提示框（验证结果的显示框）
         function result_toast(name, params){
             let r = node_result.get(name);
             let body = ""
@@ -549,7 +559,7 @@ ${body}
         }
 
 
-//更新/绘制DVNet图
+        //更新/绘制DVNet图
         function parseNodes(arr){
             console.log(arr)
             node_data = []
@@ -567,8 +577,8 @@ ${body}
                     node_set.add(s[0])
                 }else{
                     DVNet_link_data.push({
-                            source: s[0],
-                            target: s[1]
+                        source: s[0],
+                        target: s[1]
                     })
                 }
                 node_set.add(s[0])
@@ -592,7 +602,7 @@ ${body}
         }
 
 
-//
+        //
         function parseResult(str){
             let token = str.split(":")
 
@@ -618,7 +628,7 @@ ${body}
         }
 
 
-//突出目的节点
+        //突出目的节点
         function highlightResult(node){
             DVNetChart.dispatchAction({
                 type: 'highlight',
@@ -640,7 +650,7 @@ ${body}
             DVNetChart.setOption(DVNet_options);
         }
 
-//固定节点位置
+        //固定节点位置
         function fixNode(){
             for (let i of node_data) {
                 i.fixed = true;
@@ -650,7 +660,7 @@ ${body}
         }
 
 
-//清除节点highlight
+        //清除节点highlight
         function clearHighlight(){
             DVNetChart.dispatchAction({
                 type: 'downplay',
@@ -666,7 +676,7 @@ ${body}
         }
 
 
-function replay(){
+        function replay(){
             clearHighlight()
             let f = i =>{
                 setTimeout(()=>{
@@ -681,22 +691,22 @@ function replay(){
 
 
         function sub() {
-  clearHighlight();
+            clearHighlight();
 
-  // 倒序播放结果序列
-  let reverseIndex = result_sequence.length - 1;
-  let reversePlay = () => {
-    setTimeout(() => {
-      if (reverseIndex >= 0) {
-        highlightResult(result_sequence[reverseIndex][0]);
-        reverseIndex--;
-        reversePlay();
-      }
-    }, result_sequence[reverseIndex][1] * 50);
-  };
+            // 倒序播放结果序列
+            let reverseIndex = result_sequence.length - 1;
+            let reversePlay = () => {
+                setTimeout(() => {
+                    if (reverseIndex >= 0) {
+                        highlightResult(result_sequence[reverseIndex][0]);
+                        reverseIndex--;
+                        reversePlay();
+                    }
+                }, result_sequence[reverseIndex][1] * 50);
+            };
 
-  setTimeout(reversePlay, 500);
-}
+            setTimeout(reversePlay, 500);
+        }
 
 
         function parseFinish(){
@@ -732,7 +742,7 @@ function replay(){
                 verification_result.addClass("text-danger")
             }
         }
-//根据给定的数组更新设备信息和设备规则，并在特定条件下更新要求包空间的文本内容
+        //根据给定的数组更新设备信息和设备规则，并在特定条件下更新要求包空间的文本内容
         function parseInfo(arr){
             device_info.clear()
             device_rules.clear()
@@ -768,8 +778,8 @@ function replay(){
         }
 
 
-//传入的规则数组解析并添加到指定设备的规则列表中，并更新规则表格的显示。
-           function parseRule(arr, device){
+        //传入的规则数组解析并添加到指定设备的规则列表中，并更新规则表格的显示。
+        function parseRule(arr, device){
             {#let dom = $('#rule_body')#}
             {#dom.find('tr').remove();#}
             max_index = 0;
@@ -795,15 +805,15 @@ function replay(){
             for(let key of device_rules.get(device).keys()){
                 let i = device_rules.get(device).get(key)
                 dom.append(
-                   `<tr scope="row"><td>${i.match}</td><td>${i.action}</td><td>Acl(permit)</td><td><button class="btn btn-link " style="padding: 0; text-align: center; color:red" onclick="delete_rule(${key}) ">delete</button></td></tr>`
+                    `<tr scope="row"><td>${i.match}</td><td>${i.action}</td><td>Acl(permit)</td><td><button class="btn btn-link " style="padding: 0; text-align: center; color:red" onclick="delete_rule(${key}) ">delete</button></td></tr>`
 
-                    )
+                )
 
             }
         }
 
 
-//添加rule
+        //添加rule
         function setRuleAdditionDeviceName(device){
             device_selected_in_rules = device;
             $("#rule-addition-device-name").attr("placeholder", device)
@@ -851,12 +861,15 @@ function replay(){
             $('#requirement_source').find('option').remove();
             $('#requirement_waypoint').find('option').remove();
             $('#requirement_destination').find('option').remove()
-            for(let node of devices){
-                $('#requirement_source').append(`<option label="${node}" value="${node}">${node}</option>`)
-                $('#requirement_destination').append(`<option label="${node}" value="${node}">${node}</option>`)
+
+            $('#requirement_source').append(`<option label="BM" value="BM">BM</option>`)
+            $('#requirement_destination').append(`<option label="VM" value="VM">VM</option>`)
+            {#for(let node of devices){#}
+            {#    $('#requirement_source').append(`<option label="${node}" value="${node}">${node}</option>`)#}
+            {#    $('#requirement_destination').append(`<option label="${node}" value="${node}">${node}</option>`)#}
                 {#requirement_destination.options.add(new Option(node, node));#}
-                last = node;
-            }
+            {#    last = node;#}
+            {#}#}
             $('#requirement_destination').val(last)
             $('#additional-hops').text('')
             $('#additional-hops2').text('')
@@ -904,19 +917,19 @@ function replay(){
 
 
         }
-function getSelectedLabels(){
+        function getSelectedLabels(){
 
-}
+        }
 
-function confirm_NAT(){
-let selectedLabels = getSelectedLabels(); // 获取选中的标签
-if (selectedLabels.includes("NAT_Reject")){
-            $('#collapseTwo').collapse("hide");
-            $('#collapseOne').collapse("show");}
+        function confirm_NAT(){
+            let selectedLabels = getSelectedLabels(); // 获取选中的标签
+            if (selectedLabels.includes("NAT_Reject")){
+                $('#collapseTwo').collapse("hide");
+                $('#collapseOne').collapse("show");}
             if (selectedLabels.includes("NAT_Confirm")) {
-     $('#collapseTwo').collapse("show");
-            $('#collapseOne').collapse("hide");
-  }
+                $('#collapseTwo').collapse("show");
+                $('#collapseOne').collapse("hide");
+            }
         }
 
         function confirm_topology(){
@@ -929,7 +942,8 @@ if (selectedLabels.includes("NAT_Reject")){
         function confirm_requirement(){
             source = $('#requirement_source option:selected').val();
             destination = $('#requirement_destination option:selected').val();
-            addition_hops = $('#requirement_addition_hops option:selected').val();
+            {#addition_hops = $('#requirement_addition_hops option:selected').val();#}
+            addition_hops = 99;
             acl_source = $('#security_group_sourceip').val();
             acl_dest = $('#security_group_desip').val();
             acl_action = $('#security_group_action option:selected').val();
@@ -943,9 +957,7 @@ if (selectedLabels.includes("NAT_Reject")){
                 requirement = `
 
 <span class="font-weight-bold">exist</span> >= 1,<br>
-((<span class="font-weight-bold">${source}</span>.*<span class="font-weight-bold">${destination}</span>)
-and <span class="font-weight-bold"> loop_free</span>),<br>
- (<span class="font-weight-bold">${addition_hops==='0'?'== shortest':'<= shortest+'+addition_hops}</span>))`
+(<span class="font-weight-bold">${source}</span>.*<span class="font-weight-bold">${destination}</span>)`
                 $("#requirement").html(requirement)
                 $("#requirement2").html(requirement)
 
@@ -976,11 +988,11 @@ and <span class="font-weight-bold"> loop_free</span>),<br>
 
         }
         function nat_edit(){
-        $('#natModal').modal('show');
+            $('#natModal').modal('show');
         }
 
         function acl_edit(){
-        $('#aclModal').modal('show');
+            $('#aclModal').modal('show');
         }
 
         function add_rule(){
@@ -1023,65 +1035,65 @@ and <span class="font-weight-bold"> loop_free</span>),<br>
 
 
         //生成随机拓扑
-         function new_random_topology(){
-    let device_number = getRndInteger(3,10);
-    let edge_number;
+        function new_random_topology(){
+            let device_number = getRndInteger(3,10);
+            let edge_number;
 
-    if(device_number < 5){
-        edge_number = getRndInteger(device_number - 1, device_number * (device_number - 1) / 2);
-    }
-    let devices = new Set();
-    let edges = new Set();
-    function addEdge(a, b){
-        if(a > b){
-            edges.add([b, a])
-        } else{
-            edges.add([a, b])
-        }
-    }
-
-    for(let i = 0; i < device_number; i++){
-        devices.add(String.fromCharCode(65 + i))
-    }
-    let include = new Set();
-
-    for(let device of devices){
-        if(include.size === 0) {
-            include.add(device);
-            continue;
-        }
-        let items = [...include];
-        let hit = items[Math.floor(Math.random() * items.length)];
-        addEdge(device, hit);
-        include.add(device);
-    }
-    let items = [...devices];
-    a:
-        for(let i = device_number-1; i < edge_number; i++){
-            let edge = getArrayItems(items, 2);
-            for(let e of edges){
-                if((e[0] === edge[0] && e[1] === edge[1]) || (e[0] === edge[1] && e[1] === edge[0])){
-                    i--;
-                    continue a;
+            if(device_number < 5){
+                edge_number = getRndInteger(device_number - 1, device_number * (device_number - 1) / 2);
+            }
+            let devices = new Set();
+            let edges = new Set();
+            function addEdge(a, b){
+                if(a > b){
+                    edges.add([b, a])
+                } else{
+                    edges.add([a, b])
                 }
             }
-            addEdge(edge[0], edge[1])
+
+            for(let i = 0; i < device_number; i++){
+                devices.add(String.fromCharCode(65 + i))
+            }
+            let include = new Set();
+
+            for(let device of devices){
+                if(include.size === 0) {
+                    include.add(device);
+                    continue;
+                }
+                let items = [...include];
+                let hit = items[Math.floor(Math.random() * items.length)];
+                addEdge(device, hit);
+                include.add(device);
+            }
+            let items = [...devices];
+            a:
+                for(let i = device_number-1; i < edge_number; i++){
+                    let edge = getArrayItems(items, 2);
+                    for(let e of edges){
+                        if((e[0] === edge[0] && e[1] === edge[1]) || (e[0] === edge[1] && e[1] === edge[0])){
+                            i--;
+                            continue a;
+                        }
+                    }
+                    addEdge(edge[0], edge[1])
+                }
+            let connectionPoint = "Z";
+            let waypoint = "Y";
+            devices.add(connectionPoint);
+            devices.add(waypoint);
+            for (let device of devices) {
+                if (device === connectionPoint) {
+                    addEdge(device, waypoint);
+                } else if (device !== waypoint) {
+                    addEdge(waypoint, device);
+                }
+            }
+
+
+            set_topology(edges, `Random (${device_number} devices, ${edge_number} edges)`);
         }
-    let connectionPoint = "Z";
-    let waypoint = "Y";
-    devices.add(connectionPoint);
-    devices.add(waypoint);
-    for (let device of devices) {
-  if (device === connectionPoint) {
-    addEdge(device, waypoint);
-  } else if (device !== waypoint) {
-    addEdge(waypoint, device);
-  }
-}
-
-
-    set_topology(edges, `Random (${device_number} devices, ${edge_number} edges)`);
-}
 
 
         function getArrayItems(arr, num) {
@@ -1127,8 +1139,8 @@ and <span class="font-weight-bold"> loop_free</span>),<br>
             socketc.send(JSON.stringify(res));
         }
 
-       function showModal() {
-  $('#ruleAdditionModal').modal('show');
-}
+        function showModal() {
+            $('#ruleAdditionModal').modal('show');
+        }
     </script>
 {% endblock %}

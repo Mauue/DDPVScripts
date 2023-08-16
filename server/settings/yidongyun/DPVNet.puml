@@ -1,0 +1,19 @@
+@startuml
+state DPVNet0 {
+'packet_space:['VM']
+'ingress:BM
+'match: exists >= 1
+'path: BM.*VM
+[*]-->BM.0:[[]]
+BM.0-->A.0:[[]]
+A.0-->SW.0:[[]]
+SW.0-->Aggr.0:[[]]
+Aggr.0-->C.0:[[]]
+C.0-->BMGW.0:[[]]
+BMGW.0-->C.1:[[]]
+C.1-->Aggr.1:[[]]
+Aggr.1-->SW.1:[[]]
+SW.1-->B.0:[[]]
+B.0-->VM.0:[[]]
+}
+@enduml
