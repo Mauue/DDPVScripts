@@ -7,10 +7,20 @@ import networkx as nx
 import argparse
 
 from functools import reduce
+class IpGenerator:
+    def __init__(self, prefix=24, base=168427520,):
+        self.prefix = prefix
+        self.network = 0
+        self.base = base
 
 
-class IpGenerator():
-    def __init__(self, prefix=24, base=167772160):
+    def gen(self):
+        ip = self.base + (self.network << (32 - self.prefix))
+        self.network += 1
+        return ip
+
+class ExternalIpGenerator:
+    def __init__(self, prefix=24, base=336199680):
         self.prefix = prefix
         self.network = 0
         self.m = 1
@@ -36,6 +46,8 @@ def write_space(nodeToPrefix, prefix, output):
 def gen_fib(input, output, nprefix, prefix):
     FIBs = {}
     nodeToPrefix = {}
+    nodeToExternal = {}
+    externalIpGen = ExternalIpGenerator()
     ipGen = IpGenerator(prefix)
     G = nx.Graph()
     res = []
@@ -52,8 +64,21 @@ def gen_fib(input, output, nprefix, prefix):
     for node in G.nodes:
         FIBs[node] = []
         nodeToPrefix[node] = []
-        for i in range(nprefix):
-            nodeToPrefix[node].append(ipGen.gen())
+        nodeToExternal[node] = []
+        if node != "Z" and node != "Y":
+            for i in range(nprefix):
+                nodeToPrefix[node].append(externalIpGen.gen())
+                nodeToExternal[node].append(0)
+        else:
+            if node == "Y":
+                for i in range(nprefix):
+                    nodeToPrefix[node].append(externalIpGen.gen())
+                    nodeToPrefix[node].append(ipGen.gen())
+            if node == "Z":
+                for i in range(nprefix):
+                    nodeToExternal[node].append(externalIpGen.gen())
+                    nodeToPrefix[node].append(ipGen.gen())
+
         # res[node] = dict()
         # res[node]["ip"] = nodeToPrefix[node]
 
@@ -89,6 +114,7 @@ def gen_fib_plus(input, output, nprefix, prefix, layers=0, decompose=0):
     #     return
     FIBs = {}
     nodeToPrefix = {}
+    copyOfNode = {}
     ipGen = IpGenerator(prefix)
     G = nx.Graph()
     res = []
@@ -105,13 +131,14 @@ def gen_fib_plus(input, output, nprefix, prefix, layers=0, decompose=0):
     for node in G.nodes:
         FIBs[node] = []
         nodeToPrefix[node] = []
+        copyOfNode[node] = []
         for i in range(nprefix):
             nodeToPrefix[node].append(ipGen.gen())
+
         # res[node] = dict()
         # res[node]["ip"] = nodeToPrefix[node]
 
     write_space(nodeToPrefix, prefix, output)
-
     for n in G.nodes:
         lengths, paths = nx.single_source_dijkstra(G, n, weight='latency')
         for (dst, path) in paths.items():
