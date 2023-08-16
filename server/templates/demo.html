@@ -161,14 +161,14 @@
                     </div>
 
                 </div>
-            </div>
+
             <div class="tab-pane fade d-none" id="tabs_2_2" role="tabpanel" aria-labelledby="verifier-tab" style="min-height: 800px">
                 <div class="row">
                     <div class="col-7">
                         <div id="dvnet-panel" style="width: 800px;height:800px"></div>
 
                     </div>
-                    <div class="col-5 p-3 bg-secondary text-dark" style="width: 100;text-align: center; ">
+                    <div class="col-5 p-3 bg-secondary text-dark" style="width: 100px;text-align: center; ">
                         <div>
                             <h3> Dataset Info</h3>
                             <div style="overflow-y: scroll; max-height: 200px">
@@ -551,29 +551,40 @@ ${body}
 
 //更新/绘制DVNet图
         function parseNodes(arr){
+            console.log(arr)
             node_data = []
             DVNet_link_data = []
-            console.log(arr)
+            start = []
+            end = []
+            node_set = new Set();
             for(let s of arr){
-                let token = s.split(" ");
-                let node_name = token[1] + "-" +token[2]
-                let has_next = false;
-                for(let i=4; i<token.length;i+=2){
-                    if(i+1 < token.length) {
-                        DVNet_link_data.push({
-                            source: node_name,
-                            target: token[i] + "-" + token[i + 1]
-                        })
-                        has_next = true;
-                    }
+                s[0] = s[0].replace(".", "-");
+                s[1] = s[1].replace(".", "-");
+
+                if (s[0] === "[*]") {
+                    node_set.add(s[1])
+                }else if (s[1] === "[*]") {
+                    node_set.add(s[0])
+                }else{
+                    DVNet_link_data.push({
+                            source: s[0],
+                            target: s[1]
+                    })
                 }
-                if(token[0] === "linka" || has_next === false)
-                    node_data.push({name: node_name, value: node_name, category: 0, x: 400, y:800, fixed: true})
-                else if (token[1] === source && token[2] === '0')
-                    node_data.push({name: node_name, value: node_name, category: 2, x: 400, y:0})
-                else
-                    node_data.push({name: node_name, value: node_name, category: 1})
+                node_set.add(s[0])
+                node_set.add(s[1])
             }
+            for (let s of node_set){
+                if (s === "[*]") continue
+                if (end.indexOf(s) !== -1){
+                    node_data.push({name: s, value: s, category: 0, x: 400, y:800, fixed: true})
+                }else if (start.indexOf(s) !== -1){
+                    node_data.push({name: s, value: s, category: 2, x: 400, y:0})
+                }else{
+                    node_data.push({name: s, value: s, category: 1})
+                }
+            }
+
             DVNetChart.clear();
             DVNet_options.series[0].data = node_data;
             DVNet_options.series[0].links = DVNet_link_data;

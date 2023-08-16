@@ -13,3 +13,4 @@ if __name__ == '__main__':
     parser.add_argument("-decompose", type=int, default=0, help="each rule will be decomposed into 2^k rules")
     args = parser.parse_args()
     gen_fib_plus(args.input, args.output, args.nprefix, args.prefix, layers=args.layers, decompose=args.decompose)
+
