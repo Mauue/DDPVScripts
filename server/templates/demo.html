@@ -52,21 +52,21 @@
                                             <input type="radio" name="custom-radio-1" class="custom-control-input" id="network-yidongyun" >
                                             <label class="custom-control-label" for="network-yidongyun">移动云</label>
                                         </div>
-{#                                        <div class="custom-control custom-radio mb-3">#}
-{#                                            <input type="radio" name="custom-radio-1" class="custom-control-input" id="network-Internet2" >#}
-{#                                            <label class="custom-control-label" for="network-Internet2">Internet2 (mimicked)</label>#}
-{#                                        </div>#}
-{#                                        <div class="custom-control custom-radio mb-3">#}
-{#                                            <input type="radio" name="custom-radio-1"  class="custom-control-input" id="network1" >#}
-{#                                            <label class="custom-control-label" for="network1">Small testbed</label>#}
-{#                                        </div>#}
-{#                                        <div class="custom-control custom-radio mb-3">#}
-{#                                            <input type="radio" name="custom-radio-1"  class="custom-control-input" id="randomNetwork" >#}
-{#                                            <label class="custom-control-label" for="randomNetwork">Generate a random topology.</label>#}
-{##}
-{#                                            <button type="button" id="refresh-random-topology-button" class="btn btn-link btn-sm" style="padding: 0" onclick="new_random_topology()" disabled>refresh</button>#}
-{##}
-{#                                        </div>#}
+                                        {#                                        <div class="custom-control custom-radio mb-3">#}
+                                        {#                                            <input type="radio" name="custom-radio-1" class="custom-control-input" id="network-Internet2" >#}
+                                        {#                                            <label class="custom-control-label" for="network-Internet2">Internet2 (mimicked)</label>#}
+                                        {#                                        </div>#}
+                                        {#                                        <div class="custom-control custom-radio mb-3">#}
+                                        {#                                            <input type="radio" name="custom-radio-1"  class="custom-control-input" id="network1" >#}
+                                        {#                                            <label class="custom-control-label" for="network1">Small testbed</label>#}
+                                        {#                                        </div>#}
+                                        {#                                        <div class="custom-control custom-radio mb-3">#}
+                                        {#                                            <input type="radio" name="custom-radio-1"  class="custom-control-input" id="randomNetwork" >#}
+                                        {#                                            <label class="custom-control-label" for="randomNetwork">Generate a random topology.</label>#}
+                                        {##}
+                                        {#                                            <button type="button" id="refresh-random-topology-button" class="btn btn-link btn-sm" style="padding: 0" onclick="new_random_topology()" disabled>refresh</button>#}
+                                        {##}
+                                        {#                                        </div>#}
                                         <button type="button" class="btn btn-primary" onclick="confirm_topology()" >Next</button>
                                     </div>
                                 </div>
@@ -100,18 +100,18 @@
 
 
 
-{#                                            <div class="input-group input-group-sm mb-3">#}
-{#                                                <span class="text-left">In this demo, we check the reachability from source to destination in <span class="font-weight-bold">x+n</span> hops, where x is the length of the shortest path.</span>#}
-{#                                                <div class="input-group-prepend">#}
-{#                                                    <label class="input-group-text" for="requirement_addition_hops">n</label>#}
-{#                                                </div>#}
-{#                                                <select class="custom-select custom-select-sm" id="requirement_addition_hops" >#}
-{#                                                    <option value="0">0</option>#}
-{#                                                    <option value="1">1</option>#}
-{#                                                    <option value="2" selected>2</option>#}
-{#                                                    <option value="3">3</option>#}
-{#                                                </select>#}
-{#                                            </div>#}
+                                            {#                                            <div class="input-group input-group-sm mb-3">#}
+                                            {#                                                <span class="text-left">In this demo, we check the reachability from source to destination in <span class="font-weight-bold">x+n</span> hops, where x is the length of the shortest path.</span>#}
+                                            {#                                                <div class="input-group-prepend">#}
+                                            {#                                                    <label class="input-group-text" for="requirement_addition_hops">n</label>#}
+                                            {#                                                </div>#}
+                                            {#                                                <select class="custom-select custom-select-sm" id="requirement_addition_hops" >#}
+                                            {#                                                    <option value="0">0</option>#}
+                                            {#                                                    <option value="1">1</option>#}
+                                            {#                                                    <option value="2" selected>2</option>#}
+                                            {#                                                    <option value="3">3</option>#}
+                                            {#                                                </select>#}
+                                            {#                                            </div>#}
 
 
 
@@ -603,29 +603,30 @@ ${body}
 
 
         //
-        function parseResult(str){
+        function parseResult(str) {
             let token = str.split(":")
 
-            if (token[0] === "hasResult"){
-                let token2 = token[1].split(" ")
-                highlightResult(token2[0])
+            if (token[0] === "result") {
+                let nodeName = token[1]
+                highlightResult(nodeName)
                 let this_time = window.performance.now();
                 if (last_result_time === 0) last_result_time = this_time;
                 let diff_time = this_time - last_result_time;
                 last_result_time = this_time;
-                result_sequence.push([token2[0], diff_time])
-                let r = [];
-                for(let i=1; i<token2.length; i+=2){
-                    r.push([token2[i], token2[i+1]])
-                }
-                node_result.set(token2[0], r)
+                result_sequence.push([nodeName, diff_time])
+                {#let r = [];#}
+                {#for(let i=1; i<token2.length; i+=2){#}
+                {#    r.push([token2[i], token2[i+1]])#}
+                {# }#}
+                node_result.set(nodeName, token[2])
                 finish_node_num++;
-                let p = Math.floor((100*finish_node_num/node_data.length)).toString() + "%";
+                let p = Math.floor((100 * finish_node_num / node_data.length)).toString() + "%";
                 progress_bar.css("width", p);
                 verification_state.text("Working")
                 verification_percentage.text(p)
             }
         }
+
 
 
         //突出目的节点
@@ -867,9 +868,9 @@ ${body}
             {#for(let node of devices){#}
             {#    $('#requirement_source').append(`<option label="${node}" value="${node}">${node}</option>`)#}
             {#    $('#requirement_destination').append(`<option label="${node}" value="${node}">${node}</option>`)#}
-                {#requirement_destination.options.add(new Option(node, node));#}
+            {#requirement_destination.options.add(new Option(node, node));#}
             {#    last = node;#}
-            {#}#}
+            {# }#}
             $('#requirement_destination').val(last)
             $('#additional-hops').text('')
             $('#additional-hops2').text('')

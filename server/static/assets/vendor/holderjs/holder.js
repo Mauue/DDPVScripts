@@ -345,7 +345,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    version: constants.version,
 
 	    /**
-	     * Adds a theme to default settings
+	     * Adds a theme to default config
 	     *
 	     * @param {string} name Theme name
 	     * @param {Object} theme Theme object, with foreground, background, size, font, and fontweight properties.
@@ -689,7 +689,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Modifies the DOM to fit placeholders and sets up resizable image callbacks (for fluid and automatically sized placeholders)
 	 *
 	 * @private
-	 * @param settings DOM prep settings
+	 * @param config DOM prep config
 	 */
 	function prepareDOMElement(prepSettings) {
 	    var mode = prepSettings.mode;
@@ -840,7 +840,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Core function that takes output from renderers and sets it as the source or background-image of the target element
 	 *
 	 * @private
-	 * @param renderSettings Renderer settings
+	 * @param renderSettings Renderer config
 	 */
 	function render(renderSettings) {
 	    var image = null;

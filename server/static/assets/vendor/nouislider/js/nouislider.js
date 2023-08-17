@@ -794,7 +794,7 @@
 		}
 	}
 
-	// Test all developer settings and parse to assumption-safe values.
+	// Test all developer config and parse to assumption-safe values.
 	function testOptions ( options ) {
 
 		// To prove a fix for #537, freeze options here.

@@ -21,7 +21,7 @@ app.config['SECRET_KEY'] = 'secret!'
 # socketio = SocketIO(app)
 app.debug = True
 
-settings_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "settings")
+settings_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "config")
 jar_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Coral-2.0.jar")
 
 #
@@ -54,9 +54,9 @@ def echo_socket():
     print(request.environ)
     socket = request.environ.get('wsgi.websocket')
 
-    token = str(uuid.uuid1())
-    path = os.path.join(settings_path, token)
-    os.mkdir(path)
+    # token = str(uuid.uuid1())
+    path = os.path.join(settings_path, "config/yidongyun")
+    # os.mkdir(path)
 
     while not socket.closed:
         message = socket.receive()
@@ -66,15 +66,16 @@ def echo_socket():
             data = loads(message)
             if data["type"] == "genDVNet":
                 d = get_planner_dispatcher()
-                topology = data["topology"]
-                edges = [[i["source"], i["target"]] for i in topology]
-                if len(edges) > 20:
-                    return
-                d.new_requirement(edges,
-                                  path,
-                                  data["requirement"],
-                                  handle=lambda t: socket.send(dumps(t))
-                                  )
+                # topology = data["topology"]
+                # edges = [[i["source"], i["target"]] for i in topology]
+                # if len(edges) > 20:
+                #     return
+                socket.send(dumps({"type": "DVNet", "data": d.get_DPVNet(os.path.join(path, "DPVNet.puml"))}))
+                # d.new_requirement(edges,
+                #                   path,
+                #                   data["requirement"],
+                #                   handle=lambda t: socket.send(dumps(t))
+                #                   )
             elif data["type"] == "start":
                 d = get_verifier_dispatcher()
                 d.run(path, handle=lambda t: socket.send(dumps(t)))
@@ -93,8 +94,8 @@ def echo_socket():
         except JSONDecodeError:
             print("error", message)
     # os.removedirs(path)
-    if os.path.exists(path):
-        shutil.rmtree(path)
+    # if os.path.exists(path):
+    #     shutil.rmtree(path)
 
 
 @app.route("/demo/")

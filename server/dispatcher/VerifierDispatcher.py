@@ -16,19 +16,19 @@ class VerifierDispatcher:
 
     def __init__(self):
         self._pool = ThreadPoolExecutor(max_workers=1)
-        self._jar_path = r".\Coral-2.0.jar"
+        self._jar_path = r".\Tulkun.jar"
 
     def run(self, filepath, handle):
         self._pool.submit(self._run, filepath, handle)
 
     def _run(self, filepath, handle):
         process = subprocess.Popen(
-            ["java", "-jar", self._jar_path, "GreenStart", "1", "--auto_parse_network", filepath],
-            stdout=subprocess.PIPE, bufsize=10, universal_newlines=True
+            ["java", "-jar", self._jar_path, "bs", "yidongyun"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=100, universal_newlines=True
         )
         while True:
             buf = process.stdout.readline()
-            if not buf :
+            if not buf:
                 if process.poll() is not None:
                     break
                 continue
