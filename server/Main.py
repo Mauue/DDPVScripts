@@ -55,7 +55,7 @@ def echo_socket():
     socket = request.environ.get('wsgi.websocket')
 
     # token = str(uuid.uuid1())
-    path = os.path.join(settings_path, "config/yidongyun")
+    path = os.path.join(settings_path, "yidongyun")
     # os.mkdir(path)
 
     while not socket.closed:
