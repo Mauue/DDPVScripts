@@ -22,7 +22,7 @@ app.config['SECRET_KEY'] = 'secret!'
 app.debug = True
 
 settings_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "config")
-jar_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Coral-2.0.jar")
+jar_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Tulkun.jar")
 
 #
 # @app.route("/Coral")

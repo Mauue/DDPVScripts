@@ -1,3 +1,4 @@
+import os.path
 from concurrent.futures import ThreadPoolExecutor
 import subprocess
 
@@ -16,7 +17,7 @@ class VerifierDispatcher:
 
     def __init__(self):
         self._pool = ThreadPoolExecutor(max_workers=1)
-        self._jar_path = r".\Tulkun.jar"
+        self._jar_path = ""
 
     def run(self, filepath, handle):
         self._pool.submit(self._run, filepath, handle)
@@ -24,7 +25,7 @@ class VerifierDispatcher:
     def _run(self, filepath, handle):
         process = subprocess.Popen(
             ["java", "-jar", self._jar_path, "bs", "yidongyun"],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=100, universal_newlines=True
+            stdout=subprocess.PIPE, bufsize=100, universal_newlines=True
         )
         while True:
             buf = process.stdout.readline()
@@ -34,3 +35,8 @@ class VerifierDispatcher:
                 continue
             handle({"type": "result", "data": buf.strip()})
         handle({"type": "finish"})
+
+
+if __name__ == "__main__":
+    v = VerifierDispatcher()
+    v.run("", lambda d: print(d))

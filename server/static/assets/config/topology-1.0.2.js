@@ -16,10 +16,10 @@ const i2_topology = [
 
 const yidongyun_topology = [
     ["BM", "A"],
-    ["A", "POD1-SW"],
-    ["B", "POD1-SW"],
+    ["A", "SW"],
+    ["B", "SW"],
     ["VM", "B"],
-    ["POD1-SW", "Aggr"],
+    ["SW", "Aggr"],
     ["Aggr", "C"],
     ["C", "BMGW"],
 ];
