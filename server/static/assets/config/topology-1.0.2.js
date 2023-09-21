@@ -36,51 +36,10 @@ const network1_topology = [
 ]
 
 const topology_options =  {
-    title: {
-        text: 'Topology'
-    },
-    // animationDurationUpdate: 1500,
-    // animationEasingUpdate: 'quinticInOut',
-    series: [
-        {
-            type: 'graph',
-            layout: 'force',
-            symbolSize: 50,
-            roam: true,
-            force: {
-                repulsion: 500,
-                edgeLength: [50, 100],
-                gravity: 0,
-                initLayout: 'circular',
-                // layoutAnimation: false,
-            },
-            label: {
-                show: true,
-                // color: '#000',
-                fontWeight: 800,
-            },
-            symbol:'rect',
-            itemStyle:{borderWidth:0, color:'rgb(250,230,153)',},
-            // edgeSymbol: ['circle', 'arrow'],
-            // edgeSymbolSize: [4, 10],
-            edgeLabel: {
-                fontSize: 20
-            },
-            data: [],
-            // links: [],
-            links: [],
-            lineStyle: {
-                color: 'rgb(0,0,0)',
-                width: 5,
-                curveness: 0
-            },
-            textStyle:{
 
-                fontSize: 16,
-            },
-
-        }
-    ]
+    nodes: [],
+    // links: [],
+    edges: [],
 };
 
 const DVNet_options =  {

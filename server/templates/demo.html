@@ -366,13 +366,51 @@
 
 {% block script %}
     <script src="/assets/config/topology-1.0.2.js"></script>
-    <script src="/assets/vendor/echarts/echarts.min.js"></script>
+    <script src="https://gw.alipayobjects.com/os/lib/antv/g6/4.3.2/dist/g6.min.js"></script>
+    {#    <script src="/assets/vendor/echarts/echarts.min.js"></script>#}
     <script type="text/javascript" charset="utf-8">
         let socketc = null;
         {#var socket = null;#}
 
-        let myChart = echarts.init(document.getElementById('topology-panel'));
-        let DVNetChart = echarts.init(document.getElementById('dvnet-panel'));
+        let topology_panel = document.getElementById('topology-panel');
+        let dvnet_panel = document.getElementById('dvnet-panel')
+        console.log(topology_panel)
+        let myChart = new G6.Graph({
+            container: topology_panel, // String | HTMLElement，必须，在 Step 1 中创建的容器 id 或容器本身
+            width: 800, // Number，必须，图的宽度
+            height: 600, // Number，必须，图的高度
+            modes: {
+                default: ['drag-canvas', 'drag-node'],
+            },
+            layout: {
+                type: 'force',
+                linkDistance: 100,
+                center: [400, 300],
+            },
+            animate: true,
+            defaultNode: {
+                size: 50,
+            },
+        });
+
+        let DVNetChart = new G6.Graph({
+            container: dvnet_panel, // String | HTMLElement，必须，在 Step 1 中创建的容器 id 或容器本身
+            width: 800, // Number，必须，图的宽度
+            height: 600, // Number，必须，图的高度
+            modes: {
+                default: ['drag-canvas', 'drag-node'],
+            },
+            layout: {
+                type: 'force',
+                linkDistance: 100,
+                center: [400, 300],
+            },
+            animate: true,
+            defaultNode: {
+                size: 50,
+            },
+        });
+        {#let DVNetChart = echarts.init(document.getElementById('dvnet-panel'));#}
         let requirement_source = document.getElementById('requirement_source');
         let requirement_destination = document.getElementById('requirement_destination');
         let requirement_waypoint = document.getElementById('requirement_waypoint');
@@ -520,7 +558,6 @@
             verification_state.text("")
             verification_percentage.text("")
             finish_node_num = 0;
-            DVNetChart.hideLoading()
             clearHighlight()
         }
 
@@ -587,18 +624,41 @@ ${body}
             for (let s of node_set){
                 if (s === "[*]") continue
                 if (end.indexOf(s) !== -1){
-                    node_data.push({name: s, value: s, category: 0, x: 400, y:800, fixed: true})
+                    node_data.push({id: s, label: s, category: 0, x: 400, y:800, fixed: true})
                 }else if (start.indexOf(s) !== -1){
-                    node_data.push({name: s, value: s, category: 2, x: 400, y:0})
+                    node_data.push({id: s, label: s, category: 2, x: 400, y:0})
                 }else{
-                    node_data.push({name: s, value: s, category: 1})
+                    node_data.push({id: s, label: s, category: 1})
                 }
             }
 
             DVNetChart.clear();
-            DVNet_options.series[0].data = node_data;
-            DVNet_options.series[0].links = DVNet_link_data;
-            DVNetChart.setOption(DVNet_options);
+            DVNetChart.data({nodes: node_data, edges: DVNet_link_data});
+            DVNetChart.render();
+
+             DVNetChart.on('node:dragstart', function (e) {
+                DVNetChart.layout();
+                refreshDragedNodePosition(e);
+            });
+            DVNetChart.on('node:drag', function (e) {
+                const forceLayout = DVNetChart.get('layoutController').layoutMethods[0];
+                forceLayout.execute();
+                refreshDragedNodePosition(e);
+            });
+            DVNetChart.on('node:dragend', function (e) {
+                e.item.get('model').fx = null;
+                e.item.get('model').fy = null;
+            });
+
+            if (typeof window !== 'undefined')
+                window.onresize = () => {
+                    if (!DVNetChart || DVNetChart.get('destroyed')) return;
+                    if (!dvnet_panel || !dvnet_panel.scrollWidth || !dvnet_panel.scrollHeight) return;
+                    DVNetChart.changeSize(dvnet_panel.scrollWidth, dvnet_panel.scrollHeight);
+                };
+            {#DVNet_options.series[0].data = node_data;#}
+            {#DVNet_options.series[0].links = DVNet_link_data;#}
+            {#DVNetChart.data(DVNet_options);#}
         }
 
 
@@ -648,7 +708,7 @@ ${body}
                 }
             }
             DVNet_options.series[0].links = DVNet_link_data;
-            DVNetChart.setOption(DVNet_options);
+            DVNetChart.data(DVNet_options);
         }
 
         //固定节点位置
@@ -657,23 +717,23 @@ ${body}
                 i.fixed = true;
             }
             DVNet_options.series[0].data = node_data;
-            DVNetChart.setOption(DVNet_options);
+            DVNetChart.data(DVNet_options);
         }
 
 
         //清除节点highlight
         function clearHighlight(){
-            DVNetChart.dispatchAction({
-                type: 'downplay',
-                seriesIndex: 0,
-            });
-            if(DVNet_link_data.length > 0) {
-                for (let i of DVNet_link_data) {
-                    i.lineStyle = undefined
-                }
-                DVNet_options.series[0].links = DVNet_link_data;
-                DVNetChart.setOption(DVNet_options);
-            }
+            {#DVNetChart.dispatchAction({#}
+            {#    type: 'downplay',#}
+            {#    seriesIndex: 0,#}
+            {# }); #}
+            {#if(DVNet_link_data.length > 0) {#}
+            {#    for (let i of DVNet_link_data) {#}
+            {#        i.lineStyle = undefined#}
+            {#    }#}
+            {#    DVNet_options.series[0].links = DVNet_link_data;#}
+            {#    DVNetChart.data(DVNet_options);#}
+            {# }#}
         }
 
 
@@ -830,13 +890,18 @@ ${body}
                 `)
             }
         }
-
+        function refreshDragedNodePosition(e) {
+            const model = e.item.get('model');
+            model.fx = e.x;
+            model.fy = e.y;
+        }
 
         //提供的边信息和拓扑图名称来设置拓扑图
         function set_topology(edges, name){
             devices = new Set();
             device_ports.clear();
             link = []
+            let link_tmp = []
             for(let i of edges){
                 if(!devices.has(i[0])) {
                     devices.add(i[0]);
@@ -847,18 +912,39 @@ ${body}
                     device_ports.set(i[1], new Set())
                 }
                 link.push({source: i[0], target: i[1]})
+                link_tmp.push({source: i[0], target: i[1]})
                 device_ports.get(i[0]).add(i[1]);
                 device_ports.get(i[1]).add(i[0]);
             }
             let data = []
             let index = 1;
             for(let i of devices){
-                data.push({name: i, value: i})
+                data.push({id: i, label: i});
                 index+=1;
             }
-            topology_options.series[0].data = data;
-            topology_options.series[0].links = link;
-            myChart.setOption(topology_options);
+            myChart.data({nodes: data, edges: link_tmp});
+            myChart.render();
+            myChart.on('node:dragstart', function (e) {
+                myChart.layout();
+                refreshDragedNodePosition(e);
+            });
+            myChart.on('node:drag', function (e) {
+                const forceLayout = myChart.get('layoutController').layoutMethods[0];
+                forceLayout.execute();
+                refreshDragedNodePosition(e);
+            });
+            myChart.on('node:dragend', function (e) {
+                e.item.get('model').fx = null;
+                e.item.get('model').fy = null;
+            });
+
+            if (typeof window !== 'undefined')
+                window.onresize = () => {
+                    if (!myChart || myChart.get('destroyed')) return;
+                    if (!topology_panel || !topology_panel.scrollWidth || !topology_panel.scrollHeight) return;
+                    myChart.changeSize(topology_panel.scrollWidth, topology_panel.scrollHeight);
+                };
+
             $('#requirement_source').find('option').remove();
             $('#requirement_waypoint').find('option').remove();
             $('#requirement_destination').find('option').remove()
@@ -871,7 +957,7 @@ ${body}
             {#requirement_destination.options.add(new Option(node, node));#}
             {#    last = node;#}
             {# }#}
-            $('#requirement_destination').val(last)
+            {#$('#requirement_destination').val(last)#}
             $('#additional-hops').text('')
             $('#additional-hops2').text('')
             $('#network-name').text(name)
@@ -909,10 +995,10 @@ ${body}
                 }
             }
             verifier_init()
-
+            console.log(data)
             socketc.send(JSON.stringify(data));
-            DVNetChart.clear();
-            DVNetChart.showLoading()
+            {#DVNetChart.clear();#}
+            {#DVNetChart.showLoading()#}
             $('#tabs_2_2').removeClass('d-none')
             $('#verifier-tab').tab('show')
 
