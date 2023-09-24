@@ -371,10 +371,20 @@
     <script type="text/javascript" charset="utf-8">
         let socketc = null;
         {#var socket = null;#}
+        function Mutex() {
+            var self = this; // still unsure about how "this" is captured
+            var mtx = new Promise(t => t()); // fulfilled promise ≡ unlocked mutex
+            this.lock = async function() {
+                await mtx;
+                mtx = new Promise(t => {
+                    self.unlock = () => t();
+                });
+            }
+        }
+        const parse_lock = new Mutex();
 
         let topology_panel = document.getElementById('topology-panel');
         let dvnet_panel = document.getElementById('dvnet-panel')
-        console.log(topology_panel)
         let myChart = new G6.Graph({
             container: topology_panel, // String | HTMLElement，必须，在 Step 1 中创建的容器 id 或容器本身
             width: 800, // Number，必须，图的宽度
@@ -454,12 +464,76 @@
         let device_rules = new Map();
         let device_ports = new Map();
         let device_info = new Map();
+        let subscribe_sequence = [];
         let result_sequence = [];
         let finish_node_num = 0;
         let device_selected_in_rules = null;
         let max_index = 0;
         let last_result_time = 0;
         let _this = this;
+        let subscribeAnimationTime = 300;
+        let resultAnimationTime = 300;
+
+        G6.registerEdge(
+            'can-running',
+            {
+                // 复写setState方法
+                setState(name, value, item) {
+                    const shape = item.get('keyShape');
+                    const length = shape.getTotalLength();
+                    // 监听 running 状态
+                    if (name === 'subscribe') {
+                        // running 状态为 true 时
+                        if (value) {
+                            let index = 0; // 边 path 图形的动画
+                            shape.animate(
+                                (ratio) => {
+                                    // the operations in each frame. Ratio ranges from 0 to 1 indicating the prograss of the animation. Returns the modified configurations
+                                    const startLen = ratio * length;
+                                    // Calculate the lineDash
+                                    const cfg = {
+                                        lineDash: [startLen, length - startLen],
+                                    };
+                                    return cfg;
+                                },
+                                {
+                                    repeat: false, // Whether executes the animation repeatly
+                                    duration: subscribeAnimationTime, // the duration for executing once
+                                },
+                            );
+                        } else {
+                            // running 状态为 false 时
+                            // 结束动画
+                            shape.stopAnimate();
+                            // 清空 lineDash
+                            shape.attr('lineDash', null);
+                        }
+                    }
+                    else if (name === "result"){
+                        if (value) {
+
+                            const circle = value;
+                            circle.animate(
+                                (ratio) => {
+                                    const tmpPoint = shape.getPoint(1-ratio);
+                                    return {
+                                        x: tmpPoint.x,
+                                        y: tmpPoint.y,
+                                    };
+                                },
+                                {
+                                    repeat: false, // 动画重复
+                                    duration: resultAnimationTime,
+                                },
+                            ); // 一次动画的时间长度
+                        }else{
+
+                        }
+                    }
+                },
+            },
+            'cubic-horizontal',
+        ); // 该自定义边继承了内置横向三阶贝塞尔曲线边 cubic-horizontal
 
         //页面加载完成后，通过WebSocket与服务器建立实时通信的连接，并发送一个连接消息给服务器
         window.onload = ()=>{
@@ -529,11 +603,11 @@
 
 //点击网络图节点时输出参数信息，并根据节点的结果显示相应的提示信息
             DVNetChart.on('click', function (params) {
-                console.log(params)
                 if(node_result.has(params.name)){
                     result_toast(params.name, params)
                 }
             });
+
         }
 
         //保持与服务器的连接活跃，防止连接超时关闭。
@@ -598,7 +672,6 @@ ${body}
 
         //更新/绘制DVNet图
         function parseNodes(arr){
-            console.log(arr)
             node_data = []
             DVNet_link_data = []
             start = []
@@ -615,7 +688,12 @@ ${body}
                 }else{
                     DVNet_link_data.push({
                         source: s[0],
-                        target: s[1]
+                        target: s[1],
+                        type: 'can-running',
+                        style:{
+                            lineWidth: 10,
+                            endArrow: true,
+                        }
                     })
                 }
                 node_set.add(s[0])
@@ -636,7 +714,7 @@ ${body}
             DVNetChart.data({nodes: node_data, edges: DVNet_link_data});
             DVNetChart.render();
 
-             DVNetChart.on('node:dragstart', function (e) {
+            DVNetChart.on('node:dragstart', function (e) {
                 DVNetChart.layout();
                 refreshDragedNodePosition(e);
             });
@@ -656,38 +734,81 @@ ${body}
                     if (!dvnet_panel || !dvnet_panel.scrollWidth || !dvnet_panel.scrollHeight) return;
                     DVNetChart.changeSize(dvnet_panel.scrollWidth, dvnet_panel.scrollHeight);
                 };
-            {#DVNet_options.series[0].data = node_data;#}
-            {#DVNet_options.series[0].links = DVNet_link_data;#}
-            {#DVNetChart.data(DVNet_options);#}
+            /*
+            DVNetChart.on('node:mouseenter', (ev) => {
+                // 获得当前鼠标操作的目标节点
+                const node = ev.item;
+                // 获得目标节点的所有相关边
+                const edges = node.getEdges();
+                // 将所有相关边的 running 状态置为 true，此时将会触发自定义节点的 setState 函数
+                edges.forEach((edge) => DVNetChart.setItemState(edge, 'running', true));
+            });
+            DVNetChart.on('node:mouseleave', (ev) => {
+                const node = ev.item;
+                const edges = node.getEdges();
+                edges.forEach((edge) => DVNetChart.setItemState(edge, 'running', false));
+            });
+*/
         }
 
-
+        const findNode = DVNetChart.find('node', (node) => {
+            {#return node. === 100;#}
+        });
         //
         function parseResult(str) {
             let token = str.split(":")
-
+            let time = new Date();
             if (token[0] === "result") {
-                let nodeName = token[1]
-                highlightResult(nodeName)
-                let this_time = window.performance.now();
-                if (last_result_time === 0) last_result_time = this_time;
-                let diff_time = this_time - last_result_time;
-                last_result_time = this_time;
-                result_sequence.push([nodeName, diff_time])
-                {#let r = [];#}
-                {#for(let i=1; i<token2.length; i+=2){#}
-                {#    r.push([token2[i], token2[i+1]])#}
-                {# }#}
-                node_result.set(nodeName, token[2])
-                finish_node_num++;
-                let p = Math.floor((100 * finish_node_num / node_data.length)).toString() + "%";
-                progress_bar.css("width", p);
-                verification_state.text("Working")
-                verification_percentage.text(p)
+                let node_id = token[1];
+                let node = DVNetChart.findById(node_id);
+                result_sequence.push([time, node])
+
+
+            }
+            else if(token[0] === "subscribe") {
+                let node_id = token[1];
+                let node = DVNetChart.findById(node_id);
+                subscribe_sequence.push([time, node])
+            }
+
+        }
+        const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+        async function resultAnimation(){
+            for (let i=0; i<result_sequence.length; i++){
+                node = result_sequence[i][1];
+                let edges = node.getInEdges();
+                let circles = [];
+                {#console.log(edges);#}
+                edges.forEach((edge) => {
+                    let shape = edge.get('keyShape')
+                    const startPoint = shape.getPoint(0);
+                    let circle = edge.get('group').addShape('circle', {
+                        attrs: {
+                            x: startPoint.x,
+                            y: startPoint.y,
+                            fill: 'red',
+                            r: 3,
+                        },
+                        // must be assigned in G6 3.3 and later versions. it can be any value you want
+                        name: 'circle-shape',
+                    });
+                    circles.push([edge, circle])
+                    DVNetChart.setItemState(edge, 'result', circle)
+                });
+                await sleep(0.9*resultAnimationTime);
+                for (let i=0; i< circles.length; i++){
+                     circles[i][0].get('group').removeChild(circles[i][1]);
+                }
             }
         }
-
-
+        async function subscribeAnimation(){
+            for (let i=0; i<subscribe_sequence.length; i++){
+                node = subscribe_sequence[i][1];
+                let edges = node.getOutEdges();
+                edges.forEach((edge) => DVNetChart.setItemState(edge, 'subscribe', true));
+                await sleep(0.9*subscribeAnimationTime);
+            }
+        }
 
         //突出目的节点
         function highlightResult(node){
@@ -770,38 +891,38 @@ ${body}
         }
 
 
-        function parseFinish(){
+        async function parseFinish(){
             progress_bar.css("width", "100%");
             verification_state.text("Finish");
             verification_percentage.text("100%")
-            let result = node_result.get(source+"-"+"0")
-            let success = true
-            let dom = $('#final-result-body')
-            for (let i of result){
-                let r = i[0].replace("[", "").replace("]", "")
-                r.split(",")
-                let this_success = true;
-                for(let j of r){
-                    console.log(j)
-                    let n = Number.parseInt(j.trim())
-                    if(n<1) this_success = false
-                }
-                success = success && this_success;
-                dom.append(`<tr scope="row"><td>${i[1]}</td><td>${i[0]} </td><td class="${this_success?"text-success":"text-danger"}">${this_success?"TRUE":"FALSE"}</td></tr>`)
-
-                console.log()
-            }
-            verification_result.removeClass()
-            $('#final-panel').removeClass('d-none');
+            await subscribeAnimation();
+            await resultAnimation();
+            {#let result = node_result.get(source+"-"+"0")#}
+            {#let success = true#}
+            {#let dom = $('#final-result-body')#}
+            {#for (let i of result){#}
+            {#    let r = i[0].replace("[", "").replace("]", "")#}
+            {#    r.split(",")#}
+            {#    let this_success = true;#}
+            {#    for(let j of r){#}
+            {#        let n = Number.parseInt(j.trim())#}
+            {#        if(n<1) this_success = false#}
+            {#    }#}
+            {#    success = success && this_success;#}
+            {#    dom.append(`<tr scope="row"><td>${i[1]}</td><td>${i[0]} </td><td class="${this_success?"text-success":"text-danger"}">${this_success?"TRUE":"FALSE"}</td></tr>`)#}
+            {##}
+            {#}#}
+            {#verification_result.removeClass()#}
+            {#$('#final-panel').removeClass('d-none');#}
             {#$('#reset_button').removeClass('d-none');#}
-
-            if(success) {
-                verification_result.text("TRUE");
-                verification_result.addClass("text-success")
-            }else{
-                verification_result.text("FALSE");
-                verification_result.addClass("text-danger")
-            }
+            {##}
+            {#if(success) {#}
+            {#    verification_result.text("TRUE");#}
+            {#    verification_result.addClass("text-success")#}
+            {#}else{#}
+            {#    verification_result.text("FALSE");#}
+            {#    verification_result.addClass("text-danger")#}
+            {#}#}
         }
         //根据给定的数组更新设备信息和设备规则，并在特定条件下更新要求包空间的文本内容
         function parseInfo(arr){
@@ -995,7 +1116,6 @@ ${body}
                 }
             }
             verifier_init()
-            console.log(data)
             socketc.send(JSON.stringify(data));
             {#DVNetChart.clear();#}
             {#DVNetChart.showLoading()#}
